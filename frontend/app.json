@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "Maia",
+    "slug": "maia",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "scheme": "maia",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.maia.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Maia utilise votre position pendant une session de running."
+      }
+    },
+    "android": {
+      "package": "com.maia.app",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-location"
+    ]
+  }
+}
