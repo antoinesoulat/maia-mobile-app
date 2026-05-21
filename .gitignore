@@ -1,0 +1,14 @@
+node_modules/
+.git-local/
+
+.env
+backend/.env
+frontend/.env
+
+postgres_data/
+
+.expo/
+dist/
+coverage/
+.cache/
+npm-debug.log*

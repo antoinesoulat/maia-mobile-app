@@ -1,0 +1,23 @@
+{
+  "name": "maia",
+  "version": "1.0.0",
+  "description": "Maia - Personalized training app based on menstrual cycle",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run start",
+    "setup": "npm run setup:backend && npm run setup:frontend",
+    "setup:backend": "npm --prefix backend install",
+    "setup:frontend": "npm --prefix frontend install",
+    "db:up": "docker-compose up -d postgres",
+    "db:generate": "npm --prefix backend run db:generate",
+    "db:migrate": "npm --prefix backend run db:migrate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
+}
