@@ -12,6 +12,7 @@ export function BrandButton({ children, disabled = false, onPress, variant = 'pr
         styles.button,
         variant === 'secondary' && styles.secondary,
         variant === 'ghost' && styles.ghost,
+        variant === 'mint' && styles.mint,
         disabled && styles.disabled,
         pressed && styles.pressed
       ]}
@@ -21,6 +22,7 @@ export function BrandButton({ children, disabled = false, onPress, variant = 'pr
           styles.label,
           variant === 'secondary' && styles.secondaryLabel,
           variant === 'ghost' && styles.ghostLabel,
+          variant === 'mint' && styles.mintLabel,
           disabled && styles.disabledLabel
         ]}
       >
@@ -55,6 +57,13 @@ const styles = StyleSheet.create({
   },
   ghostLabel: {
     color: colors.white
+  },
+  mint: {
+    backgroundColor: colors.mint,
+    borderRadius: radius.round
+  },
+  mintLabel: {
+    color: colors.black
   },
   disabled: {
     backgroundColor: 'rgba(255, 255, 255, 0.22)'
