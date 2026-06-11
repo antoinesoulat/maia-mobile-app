@@ -14,7 +14,7 @@ module.exports = async function jwtPlugin(app) {
   app.decorate('authenticate', async (request, reply) => {
     try {
       await request.jwtVerify();
-    } catch (error) {
+    } catch {
       return reply.status(401).send(errorResponse('UNAUTHORIZED', 'Unauthorized'));
     }
   });
