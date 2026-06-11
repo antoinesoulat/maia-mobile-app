@@ -23,7 +23,7 @@ export function AuthNavigator() {
   return (
     <NavigationContainer theme={navigationTheme}>
       <Stack.Navigator
-        initialRouteName="Welcome"
+        initialRouteName="Login"
         screenOptions={{
           animation: 'slide_from_right',
           contentStyle: { backgroundColor: colors.ink },
