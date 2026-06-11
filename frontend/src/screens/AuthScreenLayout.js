@@ -10,7 +10,7 @@ import {
 
 import { colors, spacing, type } from '../theme';
 
-export function AuthScreenLayout({ children, eyebrow, footer, subtitle, title }) {
+export function AuthScreenLayout({ children, eyebrow, footer, subtitle, title, topAccessory }) {
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -18,6 +18,8 @@ export function AuthScreenLayout({ children, eyebrow, footer, subtitle, title })
         style={styles.keyboard}
       >
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          {topAccessory ? <View style={styles.topAccessory}>{topAccessory}</View> : null}
+
           <View style={styles.header}>
             <Text style={styles.eyebrow}>{eyebrow}</Text>
             <Text style={styles.title}>{title}</Text>
@@ -69,5 +71,8 @@ const styles = StyleSheet.create({
   title: {
     ...type.title,
     color: colors.white
+  },
+  topAccessory: {
+    marginBottom: spacing.xl
   }
 });
