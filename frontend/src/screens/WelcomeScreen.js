@@ -16,7 +16,7 @@ const maiaIcon = require('../../assets/maia-app-icon.png');
 
 const phases = ['Cycle', 'Run', 'Energy'];
 
-export function WelcomeScreen() {
+export function WelcomeScreen({ navigation }) {
   const logoScale = useRef(new Animated.Value(0.84)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
   const float = useRef(new Animated.Value(0)).current;
@@ -149,7 +149,12 @@ export function WelcomeScreen() {
           <View style={styles.progressTrack}>
             <Animated.View style={[styles.progressFill, { width: progressWidth }]} />
           </View>
-          <BrandButton>Ouvrir Maia</BrandButton>
+          <View style={styles.actionStack}>
+            <BrandButton onPress={() => navigation.navigate('Register')}>Creer mon compte</BrandButton>
+            <BrandButton onPress={() => navigation.navigate('Login')} variant="ghost">
+              J'ai deja un compte
+            </BrandButton>
+          </View>
         </Animated.View>
       </View>
     </SafeAreaView>
@@ -259,6 +264,9 @@ const styles = StyleSheet.create({
   launchPanel: {
     gap: spacing.lg,
     paddingBottom: spacing.xs
+  },
+  actionStack: {
+    gap: spacing.md
   },
   launchHeader: {
     alignItems: 'center',

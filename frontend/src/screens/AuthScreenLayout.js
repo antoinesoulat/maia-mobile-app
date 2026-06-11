@@ -1,0 +1,73 @@
+import {
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
+} from 'react-native';
+
+import { colors, spacing, type } from '../theme';
+
+export function AuthScreenLayout({ children, eyebrow, footer, subtitle, title }) {
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={styles.keyboard}
+      >
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          <View style={styles.header}>
+            <Text style={styles.eyebrow}>{eyebrow}</Text>
+            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.subtitle}>{subtitle}</Text>
+          </View>
+
+          <View style={styles.body}>{children}</View>
+
+          {footer ? <View style={styles.footer}>{footer}</View> : null}
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  body: {
+    gap: spacing.lg
+  },
+  content: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingHorizontal: spacing.xl,
+    paddingVertical: 38
+  },
+  eyebrow: {
+    ...type.eyebrow,
+    color: colors.rose,
+    textTransform: 'uppercase'
+  },
+  footer: {
+    marginTop: spacing.xl
+  },
+  header: {
+    gap: spacing.md,
+    marginBottom: spacing.xxl
+  },
+  keyboard: {
+    flex: 1
+  },
+  safeArea: {
+    backgroundColor: colors.ink,
+    flex: 1
+  },
+  subtitle: {
+    ...type.body,
+    color: colors.cream
+  },
+  title: {
+    ...type.title,
+    color: colors.white
+  }
+});

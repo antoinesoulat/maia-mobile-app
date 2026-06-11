@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import 'react-native-gesture-handler';
 
-import { WelcomeScreen } from './src/screens/WelcomeScreen';
+import { AuthNavigator } from './src/navigation/AuthNavigator';
 import { colors } from './src/theme/colors';
 import { useBrandFonts } from './src/hooks/useBrandFonts';
 
@@ -19,7 +20,7 @@ export default function App() {
   return (
     <>
       <StatusBar style="light" />
-      <WelcomeScreen />
+      <AuthNavigator />
     </>
   );
 }
