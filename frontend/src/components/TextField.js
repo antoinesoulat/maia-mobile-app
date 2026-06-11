@@ -4,11 +4,14 @@ import { colors, fonts, radius, spacing } from '../theme';
 
 export function TextField({
   autoCapitalize = 'none',
+  autoComplete,
   keyboardType = 'default',
   label,
   onChangeText,
   placeholder,
+  returnKeyType,
   secureTextEntry = false,
+  textContentType,
   value
 }) {
   return (
@@ -16,12 +19,15 @@ export function TextField({
       <Text style={styles.label}>{label}</Text>
       <TextInput
         autoCapitalize={autoCapitalize}
+        autoComplete={autoComplete}
         keyboardType={keyboardType}
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={colors.muted}
+        returnKeyType={returnKeyType}
         secureTextEntry={secureTextEntry}
         style={styles.input}
+        textContentType={textContentType}
         value={value}
       />
     </View>

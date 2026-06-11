@@ -2,15 +2,17 @@ import { Pressable, StyleSheet, Text } from 'react-native';
 
 import { colors, radius, type } from '../theme';
 
-export function BrandButton({ children, onPress, variant = 'primary' }) {
+export function BrandButton({ children, disabled = false, onPress, variant = 'primary' }) {
   return (
     <Pressable
       accessibilityRole="button"
+      disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
         variant === 'secondary' && styles.secondary,
         variant === 'ghost' && styles.ghost,
+        disabled && styles.disabled,
         pressed && styles.pressed
       ]}
     >
@@ -18,7 +20,8 @@ export function BrandButton({ children, onPress, variant = 'primary' }) {
         style={[
           styles.label,
           variant === 'secondary' && styles.secondaryLabel,
-          variant === 'ghost' && styles.ghostLabel
+          variant === 'ghost' && styles.ghostLabel,
+          disabled && styles.disabledLabel
         ]}
       >
         {children}
@@ -52,6 +55,12 @@ const styles = StyleSheet.create({
   },
   ghostLabel: {
     color: colors.white
+  },
+  disabled: {
+    backgroundColor: 'rgba(255, 255, 255, 0.22)'
+  },
+  disabledLabel: {
+    color: colors.muted
   },
   pressed: {
     opacity: 0.86,
