@@ -4,7 +4,7 @@
     "slug": "maia",
     "version": "1.0.0",
     "orientation": "portrait",
-    "platforms": ["ios", "android"],
+    "platforms": ["ios", "android", "web"],
     "userInterfaceStyle": "automatic",
     "scheme": "maia",
     "assetBundlePatterns": ["**/*"],
