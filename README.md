@@ -21,22 +21,26 @@ This project consists of two main parts:
 ## Setup
 
 1. Install dependencies:
+
    ```bash
    npm run setup
    ```
 
 2. Copy environment files:
+
    ```bash
    cp backend/.env.example backend/.env
    cp frontend/.env.example frontend/.env
    ```
 
 3. Start PostgreSQL locally:
+
    ```bash
    npm run db:up
    ```
 
 4. Generate and apply database migrations:
+
    ```bash
    npm run db:generate
    npm run db:migrate

@@ -1,30 +1,31 @@
-  Spécifications techniques MVP
+Spécifications techniques MVP
+
 1. Conventions globales
-Authentification JWT
-Toutes les routes marquées 🔒 requièrent un token JWT valide.
-Middleware : authMiddleware
-Vérification du header : Authorization: Bearer <token>
-Vérification de la signature JWT
-Vérification de l'expiration du token
-Durée de validité : 7 jours
-401 si token absent ou invalide
-Gestion côté mobile
-Stockage : Secure Storage (iOS Keychain / Android Keystore)
-Suppression automatique à la déconnexion
-Format de réponse API (toutes les routes)
-Succès
-{
-  "success": true,
-  "data": {}
-}
+   Authentification JWT
+   Toutes les routes marquées 🔒 requièrent un token JWT valide.
+   Middleware : authMiddleware
+   Vérification du header : Authorization: Bearer <token>
+   Vérification de la signature JWT
+   Vérification de l'expiration du token
+   Durée de validité : 7 jours
+   401 si token absent ou invalide
+   Gestion côté mobile
+   Stockage : Secure Storage (iOS Keychain / Android Keystore)
+   Suppression automatique à la déconnexion
+   Format de réponse API (toutes les routes)
+   Succès
+   {
+   "success": true,
+   "data": {}
+   }
 
 Erreur
 {
-  "success": false,
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Human readable message"
-  }
+"success": false,
+"error": {
+"code": "ERROR_CODE",
+"message": "Human readable message"
+}
 }
 
 Codes HTTP utilisés
@@ -39,7 +40,6 @@ Not found
 500
 Server error
 
-
 Validation des données
 Validation systématique des entrées backend. Rejet 400 si non conforme.
 Champ
@@ -51,10 +51,10 @@ Min. 8 caractères
 cycle_length
 Entre 21 et 40 jours
 weight
-> 0
-height
-> 0
 
+> 0
+> height
+> 0
 
 Navigation mobile
 Voir UX/UI
@@ -80,28 +80,24 @@ bcrypt
 name
 string
 
-
 birthdate
 date
 
-
 weight
 float
-> 0
-height
-float
-> 0
-level
-string
 
+> 0
+> height
+> float
+> 0
+> level
+> string
 
 goal
 string
 
-
 cycle_start_date
 date
-
 
 cycle_length
 int
@@ -112,11 +108,8 @@ Optionnel
 notification_enabled
 boolean
 
-
 created_at
 timestamp
-
-
 
 Table session
 Champ
@@ -131,10 +124,8 @@ FK → user
 start_time
 timestamp
 
-
 end_time
 timestamp
-
 
 distance
 float
@@ -159,15 +150,11 @@ FK → user
 cycle_start_date
 date
 
-
 cycle_length
 int
 
-
 last_updated
 timestamp
-
-
 
 Table notification_settings
 Champ
@@ -179,19 +166,15 @@ FK → user
 workout_notifications
 boolean
 
-
 cycle_notifications
 boolean
-
 
 social_notifications
 boolean
 
-
 preferred_time
 int
 Heure (0–23), défaut : 18
-
 
 Règles métier
 Une seule session active par utilisateur
@@ -203,16 +186,16 @@ EPIC 1 - Gestion du profil utilisateur
 Endpoint : POST /auth/register (public)
 Payload
 {
-  "email": "",
-  "password": "",
-  "name": "",
-  "birthdate": "",
-  "weight": null,
-  "height": null,
-  "level": "",
-  "goal": "",
-  "cycle_start_date": "",
-  "cycle_length": 28
+"email": "",
+"password": "",
+"name": "",
+"birthdate": "",
+"weight": null,
+"height": null,
+"level": "",
+"goal": "",
+"cycle_start_date": "",
+"cycle_length": 28
 }
 
 Traitements backend
@@ -223,11 +206,11 @@ Création utilisateur en base
 Génération token JWT (7 jours)
 Réponse succès
 {
-  "success": true,
-  "data": {
-    "token": "jwt_token",
-    "user": { "id": "uuid" }
-  }
+"success": true,
+"data": {
+"token": "jwt_token",
+"user": { "id": "uuid" }
+}
 }
 
 Frontend mobile
@@ -240,8 +223,8 @@ Redirection vers MainTabNavigator après création
 Endpoint : POST /auth/login (public)
 Payload
 {
-  "email": "",
-  "password": ""
+"email": "",
+"password": ""
 }
 
 Traitements backend
@@ -251,11 +234,11 @@ Comparaison hash bcrypt → 401 si incorrect
 Génération JWT (7 jours)
 Réponse succès
 {
-  "success": true,
-  "data": {
-    "token": "jwt_token",
-    "user": { "id": "uuid" }
-  }
+"success": true,
+"data": {
+"token": "jwt_token",
+"user": { "id": "uuid" }
+}
 }
 
 Frontend mobile
@@ -267,12 +250,12 @@ Redirection vers MainTabNavigator après connexion
 Endpoint : PUT /users/me 🔒
 Payload
 {
-  "weight": null,
-  "height": null,
-  "level": "",
-  "goal": "",
-  "cycle_start_date": "",
-  "cycle_length": 28
+"weight": null,
+"height": null,
+"level": "",
+"goal": "",
+"cycle_start_date": "",
+"cycle_length": 28
 }
 
 Traitements backend
@@ -296,8 +279,8 @@ EPIC 2 - Gestion du cycle et personnalisation
 Endpoint : PUT /cycle 🔒
 Payload
 {
-  "cycle_start_date": "",
-  "cycle_length": 28
+"cycle_start_date": "",
+"cycle_length": 28
 }
 
 Validation : cycle_length entre 21 et 40 jours
@@ -328,12 +311,12 @@ Modérée
 Règle : une recommandation par jour maximum
 Réponse
 {
-  "success": true,
-  "data": {
-    "type": "run",
-    "duration": 30,
-    "intensity": "low"
-  }
+"success": true,
+"data": {
+"type": "run",
+"duration": 30,
+"intensity": "low"
+}
 }
 
 Frontend mobile
@@ -343,13 +326,13 @@ Bouton de lancement de séance
 Endpoint : GET /cycle/view 🔒
 Réponse
 {
-  "success": true,
-  "data": {
-    "cycle_start_date": "",
-    "cycle_length": 28,
-    "current_phase": "",
-    "phase_projections": []
-  }
+"success": true,
+"data": {
+"cycle_start_date": "",
+"cycle_length": 28,
+"current_phase": "",
+"phase_projections": []
+}
 }
 
 Frontend mobile
@@ -366,19 +349,19 @@ Bouton démarrer séance → navigation vers WorkoutStack → RunningSession
 Endpoints : POST /sessions/start 🔒 · POST /sessions/stop 🔒
 Démarrage — POST /sessions/start
 {
-  "success": true,
-  "data": { "session_id": "uuid" }
+"success": true,
+"data": { "session_id": "uuid" }
 }
 
 Vérification préalable : aucune session avec status = active pour cet utilisateur → 400 si déjà active.
 Arrêt — POST /sessions/stop
 Payload : liste de coordonnées GPS collectées côté mobile
 {
-  "session_id": "uuid",
-  "coordinates": [
-    { "lat": 48.1, "lng": -1.7, "timestamp": "..." },
-    ...
-  ]
+"session_id": "uuid",
+"coordinates": [
+{ "lat": 48.1, "lng": -1.7, "timestamp": "..." },
+...
+]
 }
 
 Traitements backend
@@ -408,12 +391,12 @@ Refresh des stats après validation (invalidation du cache stats)
 Endpoint : GET /stats/me 🔒
 Réponse
 {
-  "success": true,
-  "data": {
-    "total_sessions": 0,
-    "total_distance": 0,
-    "average_distance": 0
-  }
+"success": true,
+"data": {
+"total_sessions": 0,
+"total_distance": 0,
+"average_distance": 0
+}
 }
 
 Frontend mobile (MainTabNavigator → Stats)
@@ -439,9 +422,9 @@ Envoyer la notification push
 Si aucune séance disponible → notification générique motivationnelle
 Payload notification
 {
-  "title": "Entraînement du jour",
-  "body": "30 minutes de footing aujourd'hui",
-  "screen": "WorkoutToday"
+"title": "Entraînement du jour",
+"body": "30 minutes de footing aujourd'hui",
+"screen": "WorkoutToday"
 }
 
 Deep linking (navigation depuis notification)
@@ -450,10 +433,10 @@ SessionDetail → WorkoutStack → SessionSummary
 Gestion des préférences (table notification_settings)
 Endpoint : PUT /notifications/settings 🔒
 {
-  "workout_notifications": true,
-  "cycle_notifications": false,
-  "social_notifications": false,
-  "preferred_time": 18
+"workout_notifications": true,
+"cycle_notifications": false,
+"social_notifications": false,
+"preferred_time": 18
 }
 
 Frontend mobile

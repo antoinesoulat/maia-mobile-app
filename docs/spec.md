@@ -37,8 +37,8 @@ L’utilisatrice reste connectée pour éviter de se reconnecter à chaque ouver
 1.3 : Se déconnecter
 Permettre à l’utilisatrice de sécuriser son compte.
 En tant que utilisatrice
- Je veux pouvoir me déconnecter de mon compte
- Afin de protéger mes données personnelles
+Je veux pouvoir me déconnecter de mon compte
+Afin de protéger mes données personnelles
 Critères d’acceptation :
 Un bouton de déconnexion est accessible depuis le profil
 L’utilisatrice est redirigée vers l’écran de connexion après déconnexion
@@ -46,8 +46,8 @@ Les données ne sont plus accessibles sans reconnexion
 1.4 : Modifier son profil
 Permettre à l’utilisatrice de mettre à jour ses informations.
 En tant que utilisatrice
- Je veux modifier mes informations personnelles et sportives
- Afin de garder un profil à jour et des recommandations adaptées
+Je veux modifier mes informations personnelles et sportives
+Afin de garder un profil à jour et des recommandations adaptées
 Critères d’acceptation :
 L’utilisatrice peut modifier ses informations (poids, niveau, objectifs, cycle, etc.)
 Les modifications sont enregistrées immédiatement
@@ -55,16 +55,16 @@ Un message confirme la mise à jour
 1.5 : Consulter son profil
 Permettre à l’utilisatrice de voir ses informations.
 En tant que utilisatrice
- Je veux consulter mon profil
- Afin de vérifier mes informations personnelles et sportives
+Je veux consulter mon profil
+Afin de vérifier mes informations personnelles et sportives
 Critères d’acceptation :
 Toutes les informations du profil sont visibles clairement
 Les données affichées correspondent aux dernières mises à jour
 1.6 : Réinitialiser son mot de passe
 Permettre à l’utilisatrice de récupérer l’accès à son compte.
 En tant que utilisatrice
- Je veux pouvoir réinitialiser mon mot de passe
- Afin de récupérer l’accès à mon compte en cas d’oubli
+Je veux pouvoir réinitialiser mon mot de passe
+Afin de récupérer l’accès à mon compte en cas d’oubli
 Critères d’acceptation :
 Un lien “mot de passe oublié” est accessible
 L’utilisatrice peut recevoir un email de réinitialisation
@@ -72,8 +72,8 @@ Elle peut définir un nouveau mot de passe
 1.7 : Gérer les préférences de notifications
 Permettre à l’utilisatrice de contrôler ses rappels.
 En tant que utilisatrice
- Je veux activer ou désactiver les notifications
- Afin de recevoir uniquement les rappels qui m’intéressent
+Je veux activer ou désactiver les notifications
+Afin de recevoir uniquement les rappels qui m’intéressent
 Critères d’acceptation :
 L’utilisatrice peut activer/désactiver les notifications
 Elle peut choisir les types de notifications (entraînement, conseils, communauté)
@@ -101,7 +101,6 @@ Une confirmation est demandée avant suppression
 Toutes les données personnelles sont supprimées
 L’utilisatrice est déconnectée après suppression
 Un message confirme la suppression du compte
-
 
 1.10 : Confidentialité des données
 Permettre à l’utilisatrice de contrôler la visibilité de ses données.
@@ -223,7 +222,7 @@ Le fil d’actualité s’affiche correctement
 Les contenus sont actualisés automatiquement
 L’expérience est fluide et rapide
 
-3.2 : Envoyer un message 
+3.2 : Envoyer un message
 Permettre à l’utilisatrice d’échanger avec d’autres membres.
 
 En tant que utilisatrice
@@ -237,7 +236,6 @@ Elle peut envoyer un message texte
 Le message est reçu instantanément par l’autre utilisatrice
 Une notification est envoyée à la réception
 L’historique des messages est conservé
-
 
 3.3 : Publier sa course
 Permettre à l’utilisatrice de partager ses performances.
@@ -253,7 +251,6 @@ Elle peut ajouter un commentaire ou un ressenti
 Elle peut choisir la visibilité (publique ou privée)
 Le post apparaît dans le fil de la communauté
 Les autres utilisatrices peuvent liker et commenter
-
 
 3.4 : Consulter le fil d’actualité
 Permettre à l’utilisatrice de suivre l’activité des autres.
@@ -271,7 +268,6 @@ message
 interactions
 L’utilisatrice peut faire défiler facilement
 Le chargement est rapide et fluide
-
 
 3.5 : Créer des groupes de runneuses
 Permettre aux utilisatrices de créer et rejoindre des groupes pour courir ensemble et se motiver.
@@ -335,8 +331,8 @@ L’historique des séances est mis à jour automatiquement pour refléter les e
 4.4 : Consulter ses statistiques
 Permettre à l’utilisatrice de visualiser ses progrès en running.
 En tant que utilisatrice
- Je veux voir le nombre de séances effectuées, la distance totale parcourue et la distance moyenne par séance
- Afin de suivre mon évolution et rester motivée
+Je veux voir le nombre de séances effectuées, la distance totale parcourue et la distance moyenne par séance
+Afin de suivre mon évolution et rester motivée
 Critères d’acceptation (complétés) :
 L’application affiche le nombre total de séances
 La distance cumulée et moyenne sont visibles
@@ -407,7 +403,6 @@ Les informations sont organisées par phase du cycle
 L’utilisatrice peut consulter rapidement : les impacts sur le sport, les recommandations associées
 Des visuels ou schémas facilitent la compréhension
 
-
 Les contenus sont consultables à tout moment depuis l’application
 Les informations sont cohérentes avec les données personnelles renseignées (cycle, profil)
 L’utilisatrice peut enregistrer ou mettre en favori certains contenus
@@ -442,16 +437,3 @@ Le contenu est cohérent avec les données du cycle renseignées
 L’utilisatrice peut activer ou désactiver ces notifications
 Les notifications restent non intrusives et personnalisées
 Un accès rapide vers les recommandations associées est proposé depuis la notification
-
-
-
-
-
-
-
-
-
-
-
-
-

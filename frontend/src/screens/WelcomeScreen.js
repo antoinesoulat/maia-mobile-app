@@ -1,13 +1,5 @@
 import { useEffect, useRef } from 'react';
-import {
-  Animated,
-  Easing,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import { Animated, Easing, Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import { BrandButton } from '../components/BrandButton';
 import { colors, fonts, radius, spacing, type } from '../theme';
@@ -150,7 +142,9 @@ export function WelcomeScreen({ navigation }) {
             <Animated.View style={[styles.progressFill, { width: progressWidth }]} />
           </View>
           <View style={styles.actionStack}>
-            <BrandButton onPress={() => navigation.navigate('Register')}>Creer mon compte</BrandButton>
+            <BrandButton onPress={() => navigation.navigate('Register')}>
+              Creer mon compte
+            </BrandButton>
             <BrandButton onPress={() => navigation.navigate('Login')} variant="ghost">
               J'ai deja un compte
             </BrandButton>
