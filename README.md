@@ -51,6 +51,37 @@ This project consists of two main parts:
    npm run dev
    ```
 
+## Run with Docker
+
+Start PostgreSQL, the Fastify API, and the Expo Web app:
+
+```bash
+docker-compose up --build
+```
+
+Open the mobile layout in a browser at `http://localhost:8081`. The API health endpoint is
+available at `http://localhost:3000/health`, and PostgreSQL is exposed on port `5432`.
+
+Useful Docker commands:
+
+```bash
+docker-compose ps
+docker-compose logs -f frontend backend
+docker-compose down
+```
+
+For Expo Go or a native emulator, keep PostgreSQL/backend in Docker and run Expo on the host:
+
+```bash
+docker-compose up -d postgres backend
+cd frontend
+npm run start
+```
+
+Scan the QR code with Expo Go. Press `a` for an Android emulator or `i` for the iOS Simulator
+(macOS only). Android Emulator API calls must use `http://10.0.2.2:3000`; a physical phone must
+use the computer's LAN IP instead of `localhost`.
+
 ## Folder Structure
 
 - `/frontend` - React Native mobile application
