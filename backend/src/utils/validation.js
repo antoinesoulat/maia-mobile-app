@@ -33,7 +33,7 @@ const isNumberInRange = (value, min, max) =>
 
 const validateLoginCredentials = ({ email, password }) => {
   if (!isValidEmail(email)) {
-    return 'Email invalide.';
+    return 'E-mail invalide.';
   }
 
   if (typeof password !== 'string' || password.length === 0 || password.length > 128) {
@@ -45,15 +45,15 @@ const validateLoginCredentials = ({ email, password }) => {
 
 const validateRegistration = (payload) => {
   if (!isValidEmail(payload.email)) {
-    return 'Email invalide.';
+    return 'E-mail invalide.';
   }
 
   if (!isStrongPassword(payload.password)) {
-    return 'Le mot de passe doit contenir 8 caracteres, une minuscule, une majuscule, un chiffre et un caractere special.';
+    return 'Le mot de passe doit contenir 8 caractères, une minuscule, une majuscule, un chiffre et un caractère spécial.';
   }
 
   if (payload.name.length < 2 || payload.name.length > 50) {
-    return 'Le prenom doit contenir entre 2 et 50 caracteres.';
+    return 'Le prénom doit contenir entre 2 et 50 caractères.';
   }
 
   if (!isValidIsoDate(payload.birthdate)) {
@@ -77,7 +77,7 @@ const validateRegistration = (payload) => {
   }
 
   if (!Number.isInteger(payload.cycleLength) || !isNumberInRange(payload.cycleLength, 21, 40)) {
-    return 'La duree du cycle doit etre comprise entre 21 et 40 jours.';
+    return 'La durée du cycle doit être comprise entre 21 et 40 jours.';
   }
 
   return null;

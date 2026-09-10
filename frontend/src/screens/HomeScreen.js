@@ -12,11 +12,11 @@ const nextSteps = [
   },
   {
     label: 'Cycle',
-    text: 'Ajouter la date des dernieres regles.'
+    text: 'Ajouter la date des dernières règles.'
   },
   {
     label: 'Run',
-    text: 'Voir la premiere seance adaptee.'
+    text: 'Voir la première séance adaptée.'
   }
 ];
 
@@ -34,20 +34,20 @@ export function HomeScreen({ navigation, onLogout }) {
       <ScrollView contentContainerStyle={styles.screen} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Image source={maiaIcon} style={styles.logo} />
-          <Text style={styles.eyebrow}>ESPACE MAIA</Text>
+          <Text style={styles.eyebrow}>ESPACE MAÏA</Text>
         </View>
 
         <View style={styles.content}>
           <View style={styles.hero}>
             <Text style={styles.title}>Bienvenue dans l'aventure.</Text>
             <Text style={styles.subtitle}>
-              Ton compte est pret. On va maintenant personnaliser Maia autour de ton corps.
+              Ton compte est prêt. On va maintenant personnaliser Maïa autour de ton corps.
             </Text>
           </View>
 
           <View style={styles.todayCard}>
             <Text style={styles.cardEyebrow}>MVP EN COURS</Text>
-            <Text style={styles.cardTitle}>Prochaine etape : ton profil sportif et ton cycle.</Text>
+            <Text style={styles.cardTitle}>Prochaine étape : ton profil sportif et ton cycle.</Text>
           </View>
 
           <View style={styles.stepList}>
@@ -62,10 +62,10 @@ export function HomeScreen({ navigation, onLogout }) {
 
         <View style={styles.actions}>
           <BrandButton onPress={() => navigation.navigate('ProfileSetup')}>
-            Completer mon profil
+            Compléter mon profil
           </BrandButton>
           <BrandButton onPress={handleLogout} variant="ghost">
-            Se deconnecter
+            Se déconnecter
           </BrandButton>
         </View>
       </ScrollView>

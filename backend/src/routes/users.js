@@ -69,7 +69,7 @@ module.exports = async function userRoutes(app) {
     if (!isValidProfile(payload)) {
       return reply
         .status(400)
-        .send(errorResponse('VALIDATION_ERROR', 'Verifie les champs profil et cycle.'));
+        .send(errorResponse('VALIDATION_ERROR', 'Vérifie les champs profil et cycle.'));
     }
 
     const [updatedUser] = await db

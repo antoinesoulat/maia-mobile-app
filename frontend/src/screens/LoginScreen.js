@@ -27,7 +27,7 @@ export function LoginScreen({ navigation, onAuthenticated }) {
   const handleSubmit = async () => {
     if (!canSubmit || isSubmitting) {
       setTouched({ email: true, password: true });
-      setError('Verifie les champs indiques.');
+      setError('Vérifie les champs indiqués.');
       return;
     }
 
@@ -60,7 +60,7 @@ export function LoginScreen({ navigation, onAuthenticated }) {
           Pas encore de compte ? Rejoins l'aventure
         </BrandButton>
       }
-      subtitle="Connecte-toi pour retrouver ton profil, ton cycle et tes prochaines seances."
+      subtitle="Connecte-toi pour retrouver ton profil, ton cycle et tes prochaines séances."
       title="Ravie de te revoir."
       topAccessory={
         <View style={styles.brandLockup}>
@@ -103,7 +103,7 @@ export function LoginScreen({ navigation, onAuthenticated }) {
         {isSubmitting ? 'Connexion...' : 'Se connecter'}
       </BrandButton>
       <Text style={styles.notice}>
-        Maia accompagne ton entrainement. L'application ne remplace pas un avis medical.
+        Maïa accompagne ton entraînement. L'application ne remplace pas un avis médical.
       </Text>
     </AuthScreenLayout>
   );

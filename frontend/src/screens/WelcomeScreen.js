@@ -15,18 +15,18 @@ import { colors, fonts, radius, spacing, type } from '../theme';
 
 const maiaIcon = require('../../assets/maia-app-icon.png');
 
-const phases = ['Cycle', 'Run', 'Energy'];
+const phases = ['Cycle', 'Run', 'Énergie'];
 const benefits = [
   {
     label: 'Cycle',
-    text: 'Seances adaptees.'
+    text: 'Séances adaptées.'
   },
   {
     label: 'Progression',
     text: 'Rythme juste.'
   },
   {
-    label: 'Bien-etre',
+    label: 'Bien-être',
     text: 'Moins de pression.'
   }
 ];
@@ -164,10 +164,10 @@ export function WelcomeScreen({ navigation }) {
             </Animated.View>
 
             <Animated.View style={[styles.copy, { opacity: contentOpacity }]}>
-              <Text style={styles.eyebrow}>MAIA - JUST FOR HER</Text>
+              <Text style={styles.eyebrow}>MAÏA - JUST FOR HER</Text>
               <Text style={styles.title}>Courir avec son corps.</Text>
               <Text style={styles.subtitle}>
-                Des runs ajustes a ton cycle, ton energie et tes objectifs.
+                Des runs ajustés à ton cycle, ton énergie et tes objectifs.
               </Text>
 
               <View style={styles.phaseRow}>
@@ -212,7 +212,7 @@ export function WelcomeScreen({ navigation }) {
               Rejoins l'aventure
             </BrandButton>
             <BrandButton onPress={() => navigation.navigate('Login')} variant="ghost">
-              J'ai deja un compte
+              J'ai déjà un compte
             </BrandButton>
           </Animated.View>
         </ScrollView>
