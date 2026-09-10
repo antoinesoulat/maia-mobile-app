@@ -1,10 +1,14 @@
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { HomeScreen } from '../screens/HomeScreen';
 import { LoginScreen } from '../screens/LoginScreen';
 import { RegisterScreen } from '../screens/RegisterScreen';
 import { WelcomeScreen } from '../screens/WelcomeScreen';
 import { colors } from '../theme';
+import { clearAuthToken, getAuthToken, saveAuthToken } from '../services/authStorage';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,10 +24,51 @@ const navigationTheme = {
 };
 
 export function AuthNavigator() {
+  const [token, setToken] = useState(null);
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getAuthToken()
+      .then((storedToken) => {
+        if (isMounted) {
+          setToken(storedToken);
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsReady(true);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleAuthenticated = async ({ token: nextToken }) => {
+    await saveAuthToken(nextToken);
+    setToken(nextToken);
+  };
+
+  const handleLogout = async () => {
+    await clearAuthToken();
+    setToken(null);
+  };
+
+  if (!isReady) {
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator color={colors.honey} />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer theme={navigationTheme}>
       <Stack.Navigator
-        initialRouteName="Welcome"
+        initialRouteName={token ? 'Home' : 'Welcome'}
         screenOptions={{
           animation: 'fade_from_bottom',
           contentStyle: { backgroundColor: colors.ink },
@@ -31,9 +76,25 @@ export function AuthNavigator() {
         }}
       >
         <Stack.Screen component={WelcomeScreen} name="Welcome" />
-        <Stack.Screen component={LoginScreen} name="Login" />
-        <Stack.Screen component={RegisterScreen} name="Register" />
+        <Stack.Screen name="Login">
+          {(props) => <LoginScreen {...props} onAuthenticated={handleAuthenticated} />}
+        </Stack.Screen>
+        <Stack.Screen name="Register">
+          {(props) => <RegisterScreen {...props} onAuthenticated={handleAuthenticated} />}
+        </Stack.Screen>
+        <Stack.Screen name="Home">
+          {(props) => <HomeScreen {...props} onLogout={handleLogout} />}
+        </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  loading: {
+    alignItems: 'center',
+    backgroundColor: colors.ink,
+    flex: 1,
+    justifyContent: 'center'
+  }
+});
