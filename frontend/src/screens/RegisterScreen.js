@@ -69,9 +69,12 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
       />
       <TextField
         label="Mot de passe"
+        onSubmitEditing={handleSubmit}
         onChangeText={setPassword}
         placeholder="8 caracteres minimum"
+        returnKeyType="done"
         secureTextEntry
+        textContentType="newPassword"
         value={password}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}

@@ -75,6 +75,7 @@ export function LoginScreen({ navigation, onAuthenticated }) {
         autoComplete="password"
         label="Mot de passe"
         onChangeText={setPassword}
+        onSubmitEditing={handleSubmit}
         placeholder="8 caracteres minimum"
         returnKeyType="done"
         secureTextEntry

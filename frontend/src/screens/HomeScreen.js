@@ -1,9 +1,24 @@
-import { Image, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { BrandButton } from '../components/BrandButton';
 import { colors, fonts, radius, spacing, type } from '../theme';
 
 const maiaIcon = require('../../assets/maia-app-icon.png');
+
+const nextSteps = [
+  {
+    label: 'Profil',
+    text: 'Renseigner niveau, objectif et rythme.'
+  },
+  {
+    label: 'Cycle',
+    text: 'Ajouter la date des dernieres regles.'
+  },
+  {
+    label: 'Run',
+    text: 'Voir la premiere seance adaptee.'
+  }
+];
 
 export function HomeScreen({ navigation, onLogout }) {
   const handleLogout = async () => {
@@ -16,24 +31,39 @@ export function HomeScreen({ navigation, onLogout }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.screen}>
+      <ScrollView contentContainerStyle={styles.screen} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <Image source={maiaIcon} style={styles.logo} />
           <Text style={styles.eyebrow}>ESPACE MAIA</Text>
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.title}>Bienvenue dans l'aventure.</Text>
-          <Text style={styles.subtitle}>
-            Ton compte est pret. Prochaine etape : completer ton profil pour adapter tes runs a ton
-            cycle.
-          </Text>
+          <View style={styles.hero}>
+            <Text style={styles.title}>Bienvenue dans l'aventure.</Text>
+            <Text style={styles.subtitle}>
+              Ton compte est pret. On va maintenant personnaliser Maia autour de ton corps.
+            </Text>
+          </View>
+
+          <View style={styles.todayCard}>
+            <Text style={styles.cardEyebrow}>MVP EN COURS</Text>
+            <Text style={styles.cardTitle}>Prochaine etape : ton profil sportif et ton cycle.</Text>
+          </View>
+
+          <View style={styles.stepList}>
+            {nextSteps.map((step) => (
+              <Pressable key={step.label} disabled style={styles.stepButton}>
+                <Text style={styles.stepLabel}>{step.label}</Text>
+                <Text style={styles.stepText}>{step.text}</Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
 
         <BrandButton onPress={handleLogout} variant="ghost">
           Se deconnecter
         </BrandButton>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -45,7 +75,7 @@ const styles = StyleSheet.create({
   },
   screen: {
     backgroundColor: colors.ink,
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'space-between',
     padding: spacing.xl
   },
@@ -64,6 +94,10 @@ const styles = StyleSheet.create({
     color: colors.rose
   },
   content: {
+    gap: spacing.xl,
+    paddingVertical: spacing.xxl
+  },
+  hero: {
     gap: spacing.lg
   },
   title: {
@@ -76,5 +110,44 @@ const styles = StyleSheet.create({
     fontSize: 17,
     letterSpacing: 0,
     lineHeight: 25
+  },
+  todayCard: {
+    backgroundColor: colors.honey,
+    borderRadius: radius.sm,
+    gap: spacing.md,
+    padding: spacing.lg
+  },
+  cardEyebrow: {
+    ...type.eyebrow,
+    color: colors.ink
+  },
+  cardTitle: {
+    color: colors.ink,
+    fontFamily: fonts.heading,
+    fontSize: 22,
+    letterSpacing: 0,
+    lineHeight: 27
+  },
+  stepList: {
+    gap: spacing.md
+  },
+  stepButton: {
+    borderColor: colors.borderLight,
+    borderRadius: radius.sm,
+    borderWidth: 1,
+    gap: spacing.xs,
+    minHeight: 78,
+    padding: spacing.lg
+  },
+  stepLabel: {
+    ...type.eyebrow,
+    color: colors.rose
+  },
+  stepText: {
+    color: colors.white,
+    fontFamily: fonts.body,
+    fontSize: 15,
+    letterSpacing: 0,
+    lineHeight: 21
   }
 });
