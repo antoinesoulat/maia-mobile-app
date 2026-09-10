@@ -9,29 +9,9 @@ function getNativeBundleHost() {
   return hostMatch?.[1] || '';
 }
 
-function getWebHost() {
-  if (typeof window === 'undefined') {
-    return '';
-  }
-
-  const { hostname } = window.location;
-
-  if (!hostname || hostname === 'localhost' || hostname === '127.0.0.1') {
-    return '';
-  }
-
-  return hostname;
-}
-
 function resolveApiUrl() {
   if (Platform.OS === 'web') {
-    const webHost = getWebHost();
-
-    if (!webHost) {
-      return configuredApiUrl;
-    }
-
-    return configuredApiUrl.replace('localhost', webHost).replace('127.0.0.1', webHost);
+    return typeof window === 'undefined' ? configuredApiUrl : window.location.origin;
   }
 
   const bundleHost = getNativeBundleHost();
