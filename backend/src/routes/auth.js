@@ -4,8 +4,12 @@ const { eq } = require('drizzle-orm');
 const { db } = require('../db');
 const { cycles, notificationSettings, users } = require('../db/schema');
 const { errorResponse, successResponse } = require('../utils/response');
+const {
+  normalizeEmail,
+  validateLoginCredentials,
+  validateRegistration
+} = require('../utils/validation');
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SALT_ROUNDS = 10;
 
 const defaultProfile = () => ({
@@ -18,53 +22,31 @@ const defaultProfile = () => ({
   cycleLength: 28
 });
 
-const normalizeEmail = (email = '') => email.trim().toLowerCase();
-
-const isValidDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value);
-
 const buildRegisterPayload = (body = {}) => {
   const defaults = defaultProfile();
 
   return {
     email: normalizeEmail(body.email),
-    password: body.password || '',
-    name: (body.name || '').trim(),
-    birthdate: isValidDate(body.birthdate || '') ? body.birthdate : defaults.birthdate,
-    weight: Number(body.weight) > 0 ? Number(body.weight) : defaults.weight,
-    height: Number(body.height) > 0 ? Number(body.height) : defaults.height,
-    level: (body.level || defaults.level).trim(),
-    goal: (body.goal || defaults.goal).trim(),
-    cycleStartDate: isValidDate(body.cycle_start_date || '')
-      ? body.cycle_start_date
-      : defaults.cycleStartDate,
-    cycleLength:
-      Number(body.cycle_length) >= 21 && Number(body.cycle_length) <= 40
-        ? Number(body.cycle_length)
-        : defaults.cycleLength
+    password: typeof body.password === 'string' ? body.password : '',
+    name: typeof body.name === 'string' ? body.name.trim() : '',
+    birthdate: body.birthdate === undefined ? defaults.birthdate : body.birthdate,
+    weight: body.weight === undefined ? defaults.weight : Number(body.weight),
+    height: body.height === undefined ? defaults.height : Number(body.height),
+    level: typeof body.level === 'string' ? body.level.trim() : defaults.level,
+    goal: typeof body.goal === 'string' ? body.goal.trim() : defaults.goal,
+    cycleStartDate:
+      body.cycle_start_date === undefined ? defaults.cycleStartDate : body.cycle_start_date,
+    cycleLength: body.cycle_length === undefined ? defaults.cycleLength : Number(body.cycle_length)
   };
-};
-
-const validateCredentials = ({ email, password }) => {
-  if (!EMAIL_PATTERN.test(email)) {
-    return 'Email invalide.';
-  }
-
-  if (password.length < 8) {
-    return 'Le mot de passe doit contenir au moins 8 caracteres.';
-  }
-
-  return null;
 };
 
 module.exports = async function authRoutes(app) {
   app.post('/register', async (request, reply) => {
     const payload = buildRegisterPayload(request.body);
-    const credentialError = validateCredentials(payload);
+    const validationError = validateRegistration(payload);
 
-    if (credentialError || payload.name.length < 2) {
-      return reply
-        .status(400)
-        .send(errorResponse('VALIDATION_ERROR', credentialError || 'Le prenom est requis.'));
+    if (validationError) {
+      return reply.status(400).send(errorResponse('VALIDATION_ERROR', validationError));
     }
 
     const [existingUser] = await db
@@ -112,7 +94,7 @@ module.exports = async function authRoutes(app) {
   app.post('/login', async (request, reply) => {
     const email = normalizeEmail(request.body?.email);
     const password = request.body?.password || '';
-    const credentialError = validateCredentials({ email, password });
+    const credentialError = validateLoginCredentials({ email, password });
 
     if (credentialError) {
       return reply.status(400).send(errorResponse('VALIDATION_ERROR', credentialError));
