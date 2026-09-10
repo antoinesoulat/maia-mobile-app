@@ -46,11 +46,11 @@ export function LoginScreen({ navigation, onAuthenticated }) {
     <AuthScreenLayout
       eyebrow="Connexion"
       footer={
-        <Pressable onPress={() => navigation.navigate('Register')} style={styles.footerLink}>
-          <Text style={styles.footerText}>Pas encore de compte ? Creer ton espace Maia</Text>
-        </Pressable>
+        <BrandButton onPress={() => navigation.navigate('Register')} variant="ghost">
+          Pas encore de compte ? Rejoins l'aventure
+        </BrandButton>
       }
-      subtitle="Retrouve ton rythme, tes phases et ton entrainement du jour."
+      subtitle="Connecte-toi pour retrouver ton profil, ton cycle et tes prochaines seances."
       title="Ravie de te revoir."
       topAccessory={
         <View style={styles.brandLockup}>
@@ -82,7 +82,7 @@ export function LoginScreen({ navigation, onAuthenticated }) {
         textContentType="password"
         value={password}
       />
-      <Pressable style={styles.forgotButton}>
+      <Pressable disabled style={styles.forgotButton}>
         <Text style={styles.forgotText}>Mot de passe oublie ?</Text>
       </Pressable>
       {error ? <Text style={styles.error}>{error}</Text> : null}
@@ -143,19 +143,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     letterSpacing: 0,
     lineHeight: 18,
-    textAlign: 'center'
-  },
-  footerLink: {
-    alignItems: 'center',
-    minHeight: 44,
-    justifyContent: 'center',
-    paddingHorizontal: spacing.md
-  },
-  footerText: {
-    color: colors.honey,
-    fontFamily: fonts.strong,
-    fontSize: 14,
-    letterSpacing: 0,
     textAlign: 'center'
   }
 });

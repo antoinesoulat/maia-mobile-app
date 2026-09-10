@@ -1,4 +1,4 @@
-import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { BrandButton } from '../components/BrandButton';
 import { colors, fonts, radius, spacing, type } from '../theme';
@@ -52,17 +52,22 @@ export function HomeScreen({ navigation, onLogout }) {
 
           <View style={styles.stepList}>
             {nextSteps.map((step) => (
-              <Pressable key={step.label} disabled style={styles.stepButton}>
+              <View key={step.label} style={styles.stepButton}>
                 <Text style={styles.stepLabel}>{step.label}</Text>
                 <Text style={styles.stepText}>{step.text}</Text>
-              </Pressable>
+              </View>
             ))}
           </View>
         </View>
 
-        <BrandButton onPress={handleLogout} variant="ghost">
-          Se deconnecter
-        </BrandButton>
+        <View style={styles.actions}>
+          <BrandButton onPress={() => navigation.navigate('ProfileSetup')}>
+            Completer mon profil
+          </BrandButton>
+          <BrandButton onPress={handleLogout} variant="ghost">
+            Se deconnecter
+          </BrandButton>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -149,5 +154,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     letterSpacing: 0,
     lineHeight: 21
+  },
+  actions: {
+    gap: spacing.md
   }
 });

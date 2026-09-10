@@ -54,11 +54,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.sm,
     justifyContent: 'center',
-    minHeight: 54
+    minHeight: 54,
+    paddingHorizontal: 14
   },
   label: {
     ...type.action,
-    color: colors.ink
+    color: colors.ink,
+    textAlign: 'center'
   },
   secondary: {
     backgroundColor: colors.honey
