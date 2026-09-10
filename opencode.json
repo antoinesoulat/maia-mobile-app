@@ -1,13 +1,13 @@
 {
-    "$schema": "https://opencode.ai/config.json",
-    "provider": {
-      "openrouter": {
-        "name": "openrouter",
-        "npm": "@ai-sdk/openai-compatible",
-        "options": {
-          "baseURL": "https://openrouter.ai/api/v1",
-          "apiKey": "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",
-          "defaultParams": {
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "openrouter": {
+      "name": "openrouter",
+      "npm": "@ai-sdk/openai-compatible",
+      "options": {
+        "baseURL": "https://openrouter.ai/api/v1",
+        "apiKey": "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",
+        "defaultParams": {
           "max_tokens": 3000
         }
       },

@@ -13,7 +13,7 @@ on:
 
 jobs:
   linting:
-    name: Linting and formatting
+    name: Quality checks
     runs-on: ubuntu-latest
 
     steps:
@@ -43,6 +43,25 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
+      - name: Check Expo project
+        run: npm exec -- expo-doctor
+        working-directory: frontend
+
+      - name: Check Drizzle schema
+        run: npm run db:generate
+        working-directory: backend
+
+      - name: Audit root production dependencies
+        run: npm audit --omit=dev --audit-level=critical
+
+      - name: Audit backend production dependencies
+        run: npm audit --omit=dev --audit-level=critical
+        working-directory: backend
+
+      - name: Audit frontend production dependencies
+        run: npm audit --omit=dev --audit-level=critical
+        working-directory: frontend
+
   tests:
     name: Tests
     runs-on: ubuntu-latest
@@ -65,30 +84,8 @@ jobs:
         run: npm test -- --passWithNoTests
         working-directory: backend
 
-  project-checks:
-    name: Project checks
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-
-      - name: Install frontend dependencies
-        run: npm ci
-        working-directory: frontend
-
-      - name: Check Expo project
-        run: npm exec -- expo-doctor
-        working-directory: frontend
-
   build:
-    name: Build
+    name: Build Docker services
     runs-on: ubuntu-latest
 
     steps:
