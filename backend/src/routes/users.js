@@ -3,6 +3,12 @@ const { eq } = require('drizzle-orm');
 const { db } = require('../db');
 const { cycles, users } = require('../db/schema');
 const { errorResponse, successResponse } = require('../utils/response');
+const {
+  ALLOWED_GOALS,
+  ALLOWED_LEVELS,
+  isNumberInRange,
+  isValidIsoDate
+} = require('../utils/validation');
 
 const selectUserProfile = {
   birthdate: users.birthdate,
@@ -17,20 +23,29 @@ const selectUserProfile = {
   weight: users.weight
 };
 
-const isValidDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value || '');
-
 function buildProfilePayload(body = {}) {
-  const cycleLength = Number(body.cycle_length);
-
   return {
-    birthdate: isValidDate(body.birthdate) ? body.birthdate : null,
-    cycleLength: cycleLength >= 21 && cycleLength <= 40 ? cycleLength : null,
-    cycleStartDate: isValidDate(body.cycle_start_date) ? body.cycle_start_date : null,
-    goal: (body.goal || '').trim(),
-    height: Number(body.height) > 0 ? Number(body.height) : null,
-    level: (body.level || '').trim(),
-    weight: Number(body.weight) > 0 ? Number(body.weight) : null
+    birthdate: body.birthdate,
+    cycleLength: Number(body.cycle_length),
+    cycleStartDate: body.cycle_start_date,
+    goal: typeof body.goal === 'string' ? body.goal.trim() : '',
+    height: Number(body.height),
+    level: typeof body.level === 'string' ? body.level.trim() : '',
+    weight: Number(body.weight)
   };
+}
+
+function isValidProfile(payload) {
+  return (
+    isValidIsoDate(payload.birthdate) &&
+    isNumberInRange(payload.weight, 30, 300) &&
+    isNumberInRange(payload.height, 120, 230) &&
+    ALLOWED_LEVELS.has(payload.level) &&
+    ALLOWED_GOALS.has(payload.goal) &&
+    isValidIsoDate(payload.cycleStartDate) &&
+    Number.isInteger(payload.cycleLength) &&
+    isNumberInRange(payload.cycleLength, 21, 40)
+  );
 }
 
 module.exports = async function userRoutes(app) {
@@ -51,18 +66,10 @@ module.exports = async function userRoutes(app) {
   app.put('/me', { preHandler: app.authenticate }, async (request, reply) => {
     const payload = buildProfilePayload(request.body);
 
-    if (
-      !payload.birthdate ||
-      !payload.weight ||
-      !payload.height ||
-      !payload.level ||
-      !payload.goal ||
-      !payload.cycleStartDate ||
-      !payload.cycleLength
-    ) {
+    if (!isValidProfile(payload)) {
       return reply
         .status(400)
-        .send(errorResponse('VALIDATION_ERROR', 'Complete les champs profil et cycle.'));
+        .send(errorResponse('VALIDATION_ERROR', 'Verifie les champs profil et cycle.'));
     }
 
     const [updatedUser] = await db

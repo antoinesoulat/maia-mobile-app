@@ -5,6 +5,7 @@ import { BrandButton } from '../components/BrandButton';
 import { TextField } from '../components/TextField';
 import { getProfile, updateProfile } from '../services/userApi';
 import { colors, fonts, radius, spacing, type } from '../theme';
+import { isNumberInRange, isValidIsoDate } from '../utils/validation';
 
 const levels = [
   { label: 'Debutante', value: 'debutante' },
@@ -29,6 +30,21 @@ export function ProfileSetupScreen({ navigation }) {
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [showValidation, setShowValidation] = useState(false);
+  const birthdateIsValid = isValidIsoDate(birthdate);
+  const weightIsValid = isNumberInRange(weight, 30, 300);
+  const heightIsValid = isNumberInRange(height, 120, 230);
+  const cycleLengthValue = Number(cycleLength);
+  const cycleIsValid =
+    isValidIsoDate(cycleStartDate) &&
+    Number.isInteger(cycleLengthValue) &&
+    isNumberInRange(cycleLengthValue, 21, 40);
+  const formIsValid = birthdateIsValid && weightIsValid && heightIsValid && cycleIsValid;
+  const updateField = (setter) => (value) => {
+    setter(value);
+    setError('');
+    setSuccess('');
+  };
 
   useEffect(() => {
     getProfile()
@@ -48,6 +64,13 @@ export function ProfileSetupScreen({ navigation }) {
   const handleSave = async () => {
     setError('');
     setSuccess('');
+
+    if (!formIsValid) {
+      setShowValidation(true);
+      setError('Verifie les champs indiques avant de sauvegarder.');
+      return;
+    }
+
     setIsSaving(true);
 
     try {
@@ -92,27 +115,40 @@ export function ProfileSetupScreen({ navigation }) {
 
         <View style={styles.form}>
           <TextField
+            error={
+              showValidation && !birthdateIsValid
+                ? "Entre une date valide qui n'est pas dans le futur."
+                : ''
+            }
+            helperText="Format : AAAA-MM-JJ"
             keyboardType="numbers-and-punctuation"
             label="Date de naissance"
-            onChangeText={setBirthdate}
+            maxLength={10}
+            onChangeText={updateField(setBirthdate)}
             placeholder="AAAA-MM-JJ"
             value={birthdate}
           />
           <View style={styles.inlineFields}>
             <View style={styles.inlineField}>
               <TextField
+                error={showValidation && !weightIsValid ? 'Entre un poids de 30 a 300 kg.' : ''}
+                helperText="En kg"
                 keyboardType="decimal-pad"
                 label="Poids"
-                onChangeText={setWeight}
+                maxLength={6}
+                onChangeText={updateField(setWeight)}
                 placeholder="60"
                 value={weight}
               />
             </View>
             <View style={styles.inlineField}>
               <TextField
+                error={showValidation && !heightIsValid ? 'Entre une taille de 120 a 230 cm.' : ''}
+                helperText="En cm"
                 keyboardType="number-pad"
                 label="Taille"
-                onChangeText={setHeight}
+                maxLength={3}
+                onChangeText={updateField(setHeight)}
                 placeholder="165"
                 value={height}
               />
@@ -150,16 +186,31 @@ export function ProfileSetupScreen({ navigation }) {
           </View>
 
           <TextField
+            error={
+              showValidation && !isValidIsoDate(cycleStartDate)
+                ? "Entre une date valide qui n'est pas dans le futur."
+                : ''
+            }
+            helperText="Format : AAAA-MM-JJ"
             keyboardType="numbers-and-punctuation"
             label="Debut des dernieres regles"
-            onChangeText={setCycleStartDate}
+            maxLength={10}
+            onChangeText={updateField(setCycleStartDate)}
             placeholder="AAAA-MM-JJ"
             value={cycleStartDate}
           />
           <TextField
+            error={
+              showValidation &&
+              (!Number.isInteger(cycleLengthValue) || !isNumberInRange(cycleLengthValue, 21, 40))
+                ? 'Entre une duree comprise entre 21 et 40 jours.'
+                : ''
+            }
+            helperText="Entre 21 et 40 jours"
             keyboardType="number-pad"
             label="Duree moyenne du cycle"
-            onChangeText={setCycleLength}
+            maxLength={2}
+            onChangeText={updateField(setCycleLength)}
             onSubmitEditing={handleSave}
             placeholder="28"
             returnKeyType="done"
@@ -241,7 +292,7 @@ const styles = StyleSheet.create({
     gap: spacing.md
   },
   error: {
-    color: colors.rose,
+    color: colors.roseLight,
     fontFamily: fonts.strong,
     fontSize: 13,
     letterSpacing: 0,

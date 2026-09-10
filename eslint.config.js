@@ -36,6 +36,14 @@ module.exports = [
     }
   },
   {
+    files: ['backend/**/*.test.js'],
+    languageOptions: {
+      globals: {
+        ...globals.jest
+      }
+    }
+  },
+  {
     files: ['frontend/**/*.js', 'frontend/*.js'],
     languageOptions: {
       ecmaVersion: 2023,

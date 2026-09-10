@@ -1,12 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Animated, Pressable, StyleSheet, Text } from 'react-native';
 
 import { colors, radius, type } from '../theme';
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 export function BrandButton({ children, disabled = false, onPress, variant = 'primary' }) {
   const scale = useRef(new Animated.Value(1)).current;
+  const [isPressed, setIsPressed] = useState(false);
 
   const animateTo = (toValue) => {
     Animated.spring(scale, {
@@ -19,39 +18,49 @@ export function BrandButton({ children, disabled = false, onPress, variant = 'pr
   };
 
   return (
-    <AnimatedPressable
-      accessibilityRole="button"
-      disabled={disabled}
-      onPressIn={() => animateTo(0.97)}
-      onPressOut={() => animateTo(1)}
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.button,
-        variant === 'secondary' && styles.secondary,
-        variant === 'ghost' && styles.ghost,
-        disabled && styles.disabled,
-        pressed && styles.pressed,
-        { transform: [{ scale }] }
-      ]}
-    >
-      <Text
+    <Animated.View style={[styles.wrapper, { transform: [{ scale }] }]}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ disabled }}
+        disabled={disabled}
+        onPressIn={() => {
+          setIsPressed(true);
+          animateTo(0.97);
+        }}
+        onPressOut={() => {
+          setIsPressed(false);
+          animateTo(1);
+        }}
+        onPress={onPress}
         style={[
-          styles.label,
-          variant === 'secondary' && styles.secondaryLabel,
-          variant === 'ghost' && styles.ghostLabel,
-          disabled && styles.disabledLabel
+          styles.button,
+          variant === 'primary' && styles.primary,
+          variant === 'secondary' && styles.secondary,
+          variant === 'ghost' && styles.ghost,
+          isPressed && variant === 'primary' && styles.primaryPressed,
+          isPressed && variant === 'secondary' && styles.secondaryPressed,
+          isPressed && variant === 'ghost' && styles.ghostPressed,
+          disabled && styles.disabled
         ]}
       >
-        {children}
-      </Text>
-    </AnimatedPressable>
+        <Text
+          style={[
+            styles.label,
+            variant === 'secondary' && styles.secondaryLabel,
+            variant === 'ghost' && styles.ghostLabel,
+            disabled && styles.disabledLabel
+          ]}
+        >
+          {children}
+        </Text>
+      </Pressable>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
-    backgroundColor: colors.white,
     borderRadius: radius.sm,
     justifyContent: 'center',
     minHeight: 54,
@@ -59,8 +68,14 @@ const styles = StyleSheet.create({
   },
   label: {
     ...type.action,
-    color: colors.ink,
+    color: colors.white,
     textAlign: 'center'
+  },
+  primary: {
+    backgroundColor: colors.rose
+  },
+  primaryPressed: {
+    backgroundColor: colors.roseDeep
   },
   secondary: {
     backgroundColor: colors.honey
@@ -70,19 +85,25 @@ const styles = StyleSheet.create({
   },
   ghost: {
     backgroundColor: 'transparent',
-    borderColor: colors.borderLight,
+    borderColor: colors.honey,
     borderWidth: 1
   },
   ghostLabel: {
     color: colors.white
   },
   disabled: {
-    backgroundColor: 'rgba(255, 255, 255, 0.22)'
+    opacity: 0.42
   },
   disabledLabel: {
     color: colors.muted
   },
-  pressed: {
-    opacity: 0.86
+  ghostPressed: {
+    backgroundColor: colors.honeySoft
+  },
+  secondaryPressed: {
+    opacity: 0.78
+  },
+  wrapper: {
+    alignSelf: 'stretch'
   }
 });

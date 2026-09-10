@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 import { BrandButton } from '../components/BrandButton';
 import { TextField } from '../components/TextField';
 import { AuthScreenLayout } from './AuthScreenLayout';
 import { loginUser } from '../services/authApi';
 import { colors, fonts, radius, spacing, type } from '../theme';
+import { isValidEmail } from '../utils/validation';
 
 const maiaIcon = require('../../assets/maia-app-icon.png');
 
@@ -14,10 +15,19 @@ export function LoginScreen({ navigation, onAuthenticated }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const canSubmit = email.trim().length > 0 && password.length >= 8;
+  const [touched, setTouched] = useState({});
+  const emailIsValid = isValidEmail(email);
+  const passwordIsValid = password.length > 0 && password.length <= 128;
+  const canSubmit = emailIsValid && passwordIsValid;
+  const updateField = (setter) => (value) => {
+    setter(value);
+    setError('');
+  };
 
   const handleSubmit = async () => {
     if (!canSubmit || isSubmitting) {
+      setTouched({ email: true, password: true });
+      setError('Verifie les champs indiques.');
       return;
     }
 
@@ -63,9 +73,12 @@ export function LoginScreen({ navigation, onAuthenticated }) {
     >
       <TextField
         autoComplete="email"
+        error={touched.email && !emailIsValid ? 'Entre une adresse email valide.' : ''}
         keyboardType="email-address"
         label="Email"
-        onChangeText={setEmail}
+        maxLength={254}
+        onBlur={() => setTouched((current) => ({ ...current, email: true }))}
+        onChangeText={updateField(setEmail)}
         placeholder="toi@email.com"
         returnKeyType="next"
         textContentType="emailAddress"
@@ -73,20 +86,20 @@ export function LoginScreen({ navigation, onAuthenticated }) {
       />
       <TextField
         autoComplete="password"
+        error={touched.password && !passwordIsValid ? 'Entre ton mot de passe.' : ''}
         label="Mot de passe"
-        onChangeText={setPassword}
+        maxLength={128}
+        onBlur={() => setTouched((current) => ({ ...current, password: true }))}
+        onChangeText={updateField(setPassword)}
         onSubmitEditing={handleSubmit}
-        placeholder="8 caracteres minimum"
+        placeholder="Ton mot de passe"
         returnKeyType="done"
         secureTextEntry
         textContentType="password"
         value={password}
       />
-      <Pressable disabled style={styles.forgotButton}>
-        <Text style={styles.forgotText}>Mot de passe oublie ?</Text>
-      </Pressable>
       {error ? <Text style={styles.error}>{error}</Text> : null}
-      <BrandButton disabled={!canSubmit || isSubmitting} onPress={handleSubmit}>
+      <BrandButton disabled={isSubmitting} onPress={handleSubmit}>
         {isSubmitting ? 'Connexion...' : 'Se connecter'}
       </BrandButton>
       <Text style={styles.notice}>
@@ -118,17 +131,6 @@ const styles = StyleSheet.create({
     ...type.eyebrow,
     color: colors.ink
   },
-  forgotButton: {
-    alignSelf: 'flex-end',
-    minHeight: 36,
-    justifyContent: 'center'
-  },
-  forgotText: {
-    color: colors.honey,
-    fontFamily: fonts.strong,
-    fontSize: 14,
-    letterSpacing: 0
-  },
   notice: {
     color: colors.muted,
     fontFamily: fonts.body,
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   error: {
-    color: colors.rose,
+    color: colors.roseLight,
     fontFamily: fonts.strong,
     fontSize: 13,
     letterSpacing: 0,
