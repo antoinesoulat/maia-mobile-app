@@ -21,22 +21,26 @@ This project consists of two main parts:
 ## Setup
 
 1. Install dependencies:
+
    ```bash
    npm run setup
    ```
 
 2. Copy environment files:
+
    ```bash
    cp backend/.env.example backend/.env
    cp frontend/.env.example frontend/.env
    ```
 
 3. Start PostgreSQL locally:
+
    ```bash
    npm run db:up
    ```
 
 4. Generate and apply database migrations:
+
    ```bash
    npm run db:generate
    npm run db:migrate
@@ -46,6 +50,38 @@ This project consists of two main parts:
    ```bash
    npm run dev
    ```
+
+## Run with Docker
+
+Start PostgreSQL, the Fastify API, and the Expo Web app:
+
+```bash
+docker-compose up --build
+```
+
+Open the mobile layout in a browser at `http://localhost:8082`. The API health endpoint is
+available through the preview gateway at `http://localhost:8082/health`, and PostgreSQL is exposed
+on port `5432`.
+
+Useful Docker commands:
+
+```bash
+docker-compose ps
+docker-compose logs -f frontend backend
+docker-compose down
+```
+
+For Expo Go or a native emulator, keep PostgreSQL/backend in Docker and run Expo on the host:
+
+```bash
+docker-compose up -d postgres backend
+cd frontend
+npm run start
+```
+
+Scan the QR code with Expo Go. Press `a` for an Android emulator or `i` for the iOS Simulator
+(macOS only). Android Emulator API calls must use `http://10.0.2.2:3000`; a physical phone must
+use the computer's LAN IP instead of `localhost`.
 
 ## Folder Structure
 
