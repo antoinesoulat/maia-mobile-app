@@ -19,48 +19,45 @@ const phases = ['Cycle', 'Run', 'Energy'];
 const benefits = [
   {
     label: 'Cycle',
-    text: 'Des seances adaptees aux 4 phases hormonales.'
+    text: 'Seances adaptees.'
   },
   {
     label: 'Progression',
-    text: 'De la debutante a la sportive confirmee, sans pression.'
+    text: 'Rythme juste.'
   },
   {
     label: 'Bien-etre',
-    text: 'Moins de culpabilite les jours ou le corps demande du calme.'
+    text: 'Moins de pression.'
   }
 ];
 
 export function WelcomeScreen({ navigation }) {
   const logoScale = useRef(new Animated.Value(0.84)).current;
   const logoOpacity = useRef(new Animated.Value(0)).current;
+  const splashOpacity = useRef(new Animated.Value(1)).current;
+  const splashPulse = useRef(new Animated.Value(1)).current;
   const float = useRef(new Animated.Value(0)).current;
   const contentOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(logoOpacity, {
-        duration: 520,
-        easing: Easing.out(Easing.cubic),
-        toValue: 1,
-        useNativeDriver: true
-      }),
-      Animated.spring(logoScale, {
-        friction: 7,
-        tension: 78,
-        toValue: 1,
-        useNativeDriver: true
-      }),
-      Animated.timing(contentOpacity, {
-        delay: 380,
-        duration: 620,
-        easing: Easing.out(Easing.cubic),
-        toValue: 1,
-        useNativeDriver: true
-      })
-    ]).start();
+    const pulseAnimation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(splashPulse, {
+          duration: 620,
+          easing: Easing.inOut(Easing.cubic),
+          toValue: 1.08,
+          useNativeDriver: true
+        }),
+        Animated.timing(splashPulse, {
+          duration: 620,
+          easing: Easing.inOut(Easing.cubic),
+          toValue: 1,
+          useNativeDriver: true
+        })
+      ])
+    );
 
-    Animated.loop(
+    const floatAnimation = Animated.loop(
       Animated.sequence([
         Animated.timing(float, {
           duration: 2600,
@@ -75,8 +72,49 @@ export function WelcomeScreen({ navigation }) {
           useNativeDriver: true
         })
       ])
-    ).start();
-  }, [contentOpacity, float, logoOpacity, logoScale]);
+    );
+
+    pulseAnimation.start();
+    floatAnimation.start();
+
+    Animated.parallel([
+      Animated.timing(logoOpacity, {
+        duration: 520,
+        easing: Easing.out(Easing.cubic),
+        toValue: 1,
+        useNativeDriver: true
+      }),
+      Animated.spring(logoScale, {
+        friction: 7,
+        tension: 78,
+        toValue: 1,
+        useNativeDriver: true
+      })
+    ]).start();
+
+    const introTimer = setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(splashOpacity, {
+          duration: 640,
+          easing: Easing.out(Easing.cubic),
+          toValue: 0,
+          useNativeDriver: true
+        }),
+        Animated.timing(contentOpacity, {
+          duration: 680,
+          easing: Easing.out(Easing.cubic),
+          toValue: 1,
+          useNativeDriver: true
+        })
+      ]).start();
+    }, 1000);
+
+    return () => {
+      clearTimeout(introTimer);
+      pulseAnimation.stop();
+      floatAnimation.stop();
+    };
+  }, [contentOpacity, float, logoOpacity, logoScale, splashOpacity, splashPulse]);
 
   const floatUp = float.interpolate({
     inputRange: [0, 1],
@@ -129,7 +167,7 @@ export function WelcomeScreen({ navigation }) {
               <Text style={styles.eyebrow}>MAIA - JUST FOR HER</Text>
               <Text style={styles.title}>Courir avec son corps.</Text>
               <Text style={styles.subtitle}>
-                Maia adapte tes entrainements a ton cycle, ton energie et ton rythme de vie.
+                Des runs ajustes a ton cycle, ton energie et tes objectifs.
               </Text>
 
               <View style={styles.phaseRow}>
@@ -148,11 +186,16 @@ export function WelcomeScreen({ navigation }) {
           </View>
 
           <Animated.View style={[styles.storyPanel, { opacity: contentOpacity }]}>
-            <Text style={styles.storyTitle}>Le running pense pour la physiologie feminine.</Text>
-            <Text style={styles.storyText}>
-              Maia transforme le cycle en rythme d'entrainement, pas en obstacle. Intensite,
-              recuperation et conseils evoluent avec ce que ton corps vit.
-            </Text>
+            <View style={styles.visualRow}>
+              <View style={styles.visualCard}>
+                <Image source={maiaIcon} style={styles.visualImage} />
+                <Text style={styles.visualLabel}>Phase actuelle</Text>
+              </View>
+              <View style={[styles.visualCard, styles.visualCardActive]}>
+                <Image source={maiaIcon} style={styles.visualImageSmall} />
+                <Text style={styles.visualLabelActive}>Run du jour</Text>
+              </View>
+            </View>
 
             <View style={styles.benefitList}>
               {benefits.map((benefit) => (
@@ -173,6 +216,13 @@ export function WelcomeScreen({ navigation }) {
             </BrandButton>
           </Animated.View>
         </ScrollView>
+
+        <Animated.View pointerEvents="none" style={[styles.splash, { opacity: splashOpacity }]}>
+          <Animated.Image
+            source={maiaIcon}
+            style={[styles.splashLogo, { transform: [{ scale: splashPulse }] }]}
+          />
+        </Animated.View>
       </View>
     </SafeAreaView>
   );
@@ -191,9 +241,21 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     justifyContent: 'space-between',
-    paddingBottom: 22,
+    paddingBottom: 28,
     paddingHorizontal: spacing.xl,
-    paddingTop: 22
+    paddingTop: 30
+  },
+  splash: {
+    ...StyleSheet.absoluteFillObject,
+    alignItems: 'center',
+    backgroundColor: colors.rose,
+    justifyContent: 'center',
+    zIndex: 10
+  },
+  splashLogo: {
+    borderRadius: 42,
+    height: 132,
+    width: 132
   },
   patternLayer: {
     ...StyleSheet.absoluteFillObject,
@@ -219,8 +281,8 @@ const styles = StyleSheet.create({
   },
   hero: {
     justifyContent: 'center',
-    minHeight: 430,
-    paddingTop: 16
+    minHeight: 390,
+    paddingTop: 10
   },
   logoHalo: {
     alignItems: 'center',
@@ -231,7 +293,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: 112,
     justifyContent: 'center',
-    marginBottom: spacing.xxl,
+    marginBottom: 44,
     shadowColor: colors.honey,
     shadowOpacity: 0.26,
     shadowRadius: 28,
@@ -253,12 +315,12 @@ const styles = StyleSheet.create({
   title: {
     ...type.title,
     color: colors.white,
-    marginBottom: 18
+    marginBottom: 24
   },
   subtitle: {
     ...type.body,
     color: colors.cream,
-    marginBottom: 26
+    marginBottom: 34
   },
   phaseRow: {
     flexDirection: 'row',
@@ -287,35 +349,59 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.xs
   },
   storyPanel: {
+    gap: 28,
+    marginBottom: 34
+  },
+  visualRow: {
+    flexDirection: 'row',
+    gap: spacing.md
+  },
+  visualCard: {
+    backgroundColor: colors.honeySoft,
     borderColor: colors.borderLight,
     borderRadius: radius.sm,
     borderWidth: 1,
-    gap: spacing.lg,
-    marginBottom: spacing.xl,
-    padding: spacing.lg
+    flex: 1,
+    minHeight: 156,
+    overflow: 'hidden',
+    padding: spacing.md
   },
-  storyTitle: {
+  visualCardActive: {
+    backgroundColor: colors.honey
+  },
+  visualImage: {
+    alignSelf: 'center',
+    borderRadius: 30,
+    height: 86,
+    marginBottom: spacing.lg,
+    width: 86
+  },
+  visualImageSmall: {
+    alignSelf: 'center',
+    borderRadius: 24,
+    height: 70,
+    marginBottom: 32,
+    marginTop: spacing.sm,
+    width: 70
+  },
+  visualLabel: {
+    ...type.eyebrow,
     color: colors.white,
-    fontFamily: fonts.heading,
-    fontSize: 22,
-    letterSpacing: 0,
-    lineHeight: 27
+    textTransform: 'uppercase'
   },
-  storyText: {
-    color: colors.cream,
-    fontFamily: fonts.body,
-    fontSize: 14,
-    letterSpacing: 0,
-    lineHeight: 21
+  visualLabelActive: {
+    ...type.eyebrow,
+    color: colors.ink,
+    textTransform: 'uppercase'
   },
   benefitList: {
-    gap: spacing.md
+    flexDirection: 'row',
+    gap: spacing.sm
   },
   benefitItem: {
-    borderTopColor: 'rgba(255, 255, 255, 0.14)',
-    borderTopWidth: 1,
+    flex: 1,
     gap: spacing.xs,
-    paddingTop: spacing.md
+    minHeight: 84
   },
   benefitLabel: {
     ...type.eyebrow,
