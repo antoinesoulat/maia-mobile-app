@@ -1,13 +1,13 @@
 export const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const passwordRules = [
-  { key: 'length', label: '8 caracteres minimum', test: (value) => value.length >= 8 },
+  { key: 'length', label: '8 caractères minimum', test: (value) => value.length >= 8 },
   { key: 'lowercase', label: '1 lettre minuscule', test: (value) => /[a-z]/.test(value) },
   { key: 'uppercase', label: '1 lettre majuscule', test: (value) => /[A-Z]/.test(value) },
   { key: 'number', label: '1 chiffre', test: (value) => /\d/.test(value) },
   {
     key: 'special',
-    label: '1 caractere special',
+    label: '1 caractère spécial',
     test: (value) => /[^A-Za-z0-9]/.test(value)
   }
 ];

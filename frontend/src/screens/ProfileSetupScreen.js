@@ -8,12 +8,12 @@ import { colors, fonts, radius, spacing, type } from '../theme';
 import { isNumberInRange, isValidIsoDate } from '../utils/validation';
 
 const levels = [
-  { label: 'Debutante', value: 'debutante' },
-  { label: 'Intermediaire', value: 'intermediaire' },
-  { label: 'Avancee', value: 'avancee' }
+  { label: 'Débutante', value: 'debutante' },
+  { label: 'Intermédiaire', value: 'intermediaire' },
+  { label: 'Avancée', value: 'avancee' }
 ];
 const goals = [
-  { label: 'Regularite', value: 'regularite' },
+  { label: 'Régularité', value: 'regularite' },
   { label: 'Endurance', value: 'endurance' },
   { label: 'Performance', value: 'performance' }
 ];
@@ -67,7 +67,7 @@ export function ProfileSetupScreen({ navigation }) {
 
     if (!formIsValid) {
       setShowValidation(true);
-      setError('Verifie les champs indiques avant de sauvegarder.');
+      setError('Vérifie les champs indiqués avant de sauvegarder.');
       return;
     }
 
@@ -83,7 +83,7 @@ export function ProfileSetupScreen({ navigation }) {
         level,
         weight: Number(weight)
       });
-      setSuccess('Profil sauvegarde.');
+      setSuccess('Profil sauvegardé.');
       navigation.navigate('Home');
     } catch (nextError) {
       setError(nextError.message);
@@ -109,7 +109,7 @@ export function ProfileSetupScreen({ navigation }) {
           <Text style={styles.eyebrow}>PROFIL MVP</Text>
           <Text style={styles.title}>Personnalise tes runs.</Text>
           <Text style={styles.subtitle}>
-            Maia utilise ces infos pour ajuster intensite, recuperation et rythme.
+            Maïa utilise ces infos pour ajuster intensité, récupération et rythme.
           </Text>
         </View>
 
@@ -131,7 +131,7 @@ export function ProfileSetupScreen({ navigation }) {
           <View style={styles.inlineFields}>
             <View style={styles.inlineField}>
               <TextField
-                error={showValidation && !weightIsValid ? 'Entre un poids de 30 a 300 kg.' : ''}
+                error={showValidation && !weightIsValid ? 'Saisis un poids de 30 à 300 kg.' : ''}
                 helperText="En kg"
                 keyboardType="decimal-pad"
                 label="Poids"
@@ -143,7 +143,7 @@ export function ProfileSetupScreen({ navigation }) {
             </View>
             <View style={styles.inlineField}>
               <TextField
-                error={showValidation && !heightIsValid ? 'Entre une taille de 120 a 230 cm.' : ''}
+                error={showValidation && !heightIsValid ? 'Saisis une taille de 120 à 230 cm.' : ''}
                 helperText="En cm"
                 keyboardType="number-pad"
                 label="Taille"
@@ -193,7 +193,7 @@ export function ProfileSetupScreen({ navigation }) {
             }
             helperText="Format : AAAA-MM-JJ"
             keyboardType="numbers-and-punctuation"
-            label="Debut des dernieres regles"
+            label="Début des dernières règles"
             maxLength={10}
             onChangeText={updateField(setCycleStartDate)}
             placeholder="AAAA-MM-JJ"
@@ -203,12 +203,12 @@ export function ProfileSetupScreen({ navigation }) {
             error={
               showValidation &&
               (!Number.isInteger(cycleLengthValue) || !isNumberInRange(cycleLengthValue, 21, 40))
-                ? 'Entre une duree comprise entre 21 et 40 jours.'
+                ? 'Saisis une durée comprise entre 21 et 40 jours.'
                 : ''
             }
             helperText="Entre 21 et 40 jours"
             keyboardType="number-pad"
-            label="Duree moyenne du cycle"
+            label="Durée moyenne du cycle"
             maxLength={2}
             onChangeText={updateField(setCycleLength)}
             onSubmitEditing={handleSave}

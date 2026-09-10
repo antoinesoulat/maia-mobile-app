@@ -12,7 +12,7 @@ async function requestAuth(path, payload) {
       method: 'POST'
     });
   } catch {
-    throw new Error("Impossible de joindre l'API Maia. Verifie que la preview est bien lancee.");
+    throw new Error("Impossible de joindre l'API Maïa. Vérifie que la preview est bien lancée.");
   }
 
   const result = await response.json();

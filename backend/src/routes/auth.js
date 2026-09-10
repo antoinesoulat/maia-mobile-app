@@ -56,7 +56,7 @@ module.exports = async function authRoutes(app) {
       .limit(1);
 
     if (existingUser) {
-      return reply.status(400).send(errorResponse('EMAIL_ALREADY_USED', 'Email deja utilise.'));
+      return reply.status(400).send(errorResponse('EMAIL_ALREADY_USED', 'E-mail déjà utilisé.'));
     }
 
     const passwordHash = await bcrypt.hash(payload.password, SALT_ROUNDS);

@@ -16,12 +16,12 @@ import {
 
 const steps = ['Compte', 'Profil', 'Cycle'];
 const levels = [
-  { label: 'Debutante', value: 'debutante' },
-  { label: 'Intermediaire', value: 'intermediaire' },
-  { label: 'Avancee', value: 'avancee' }
+  { label: 'Débutante', value: 'debutante' },
+  { label: 'Intermédiaire', value: 'intermediaire' },
+  { label: 'Avancée', value: 'avancee' }
 ];
 const goals = [
-  { label: 'Regularite', value: 'regularite' },
+  { label: 'Régularité', value: 'regularite' },
   { label: 'Endurance', value: 'endurance' },
   { label: 'Performance', value: 'performance' }
 ];
@@ -72,7 +72,7 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
 
     if (step === 0 && !accountIsValid) {
       markAccountTouched();
-      setError('Verifie les champs indiques avant de continuer.');
+      setError('Vérifie les champs indiqués avant de continuer.');
       return;
     }
 
@@ -90,9 +90,9 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
       setTouched((current) => ({ ...current, cycleLength: true, cycleStartDate: true }));
 
       if (!cycleIsValid) {
-        setError('Verifie les informations de ton cycle.');
+        setError('Vérifie les informations de ton cycle.');
       } else {
-        setError('Verifie les champs indiques avant de creer ton compte.');
+        setError('Vérifie les champs indiqués avant de créer ton compte.');
       }
 
       return;
@@ -129,11 +129,11 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
       eyebrow="Inscription"
       footer={
         <BrandButton onPress={() => navigation.navigate('Login')} variant="ghost">
-          Deja un compte ? Connectez-vous
+          Déjà un compte ? Connecte-toi
         </BrandButton>
       }
-      subtitle="Cree ton compte, puis donne a Maia les infos utiles pour adapter tes premieres seances."
-      title="Cree ton espace Maia."
+      subtitle="Crée ton compte, puis donne à Maïa les infos utiles pour adapter tes premières séances."
+      title="Crée ton espace Maïa."
     >
       <View style={styles.stepper}>
         {steps.map((stepLabel, index) => (
@@ -149,12 +149,12 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
         <View style={styles.stepContent}>
           <TextField
             autoCapitalize="words"
-            error={touched.name && !nameIsValid ? 'Entre un prenom de 2 a 50 caracteres.' : ''}
-            label="Prenom"
+            error={touched.name && !nameIsValid ? 'Saisis un prénom de 2 à 50 caractères.' : ''}
+            label="Prénom"
             maxLength={50}
             onBlur={() => touch('name')}
             onChangeText={updateField(setName)}
-            placeholder="Ton prenom"
+            placeholder="Ton prénom"
             returnKeyType="next"
             value={name}
           />
@@ -175,14 +175,14 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
             autoComplete="new-password"
             error={
               touched.password && !passwordIsValid
-                ? 'Le mot de passe ne respecte pas encore toutes les regles.'
+                ? 'Le mot de passe ne respecte pas encore toutes les règles.'
                 : ''
             }
             label="Mot de passe"
             maxLength={128}
             onBlur={() => touch('password')}
             onChangeText={updateField(setPassword)}
-            placeholder="Cree un mot de passe solide"
+            placeholder="Crée un mot de passe solide"
             returnKeyType="next"
             secureTextEntry
             textContentType="newPassword"
@@ -193,7 +193,7 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
             autoComplete="new-password"
             error={
               touched.passwordConfirmation && !confirmationIsValid
-                ? 'Les deux mots de passe doivent etre identiques.'
+                ? 'Les deux mots de passe doivent être identiques.'
                 : ''
             }
             label="Confirme le mot de passe"
@@ -247,7 +247,7 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
       {step === 2 ? (
         <View style={styles.stepContent}>
           <Text style={styles.helper}>
-            Ces infos servent a placer ton entrainement dans la bonne phase du cycle.
+            Ces infos servent à placer ton entraînement dans la bonne phase du cycle.
           </Text>
           <TextField
             error={
@@ -257,7 +257,7 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
             }
             helperText="Format : AAAA-MM-JJ"
             keyboardType="numbers-and-punctuation"
-            label="Debut des dernieres regles"
+            label="Début des dernières règles"
             maxLength={10}
             onBlur={() => touch('cycleStartDate')}
             onChangeText={updateField(setCycleStartDate)}
@@ -269,12 +269,12 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
             error={
               touched.cycleLength &&
               (!Number.isInteger(cycleLengthValue) || !isNumberInRange(cycleLengthValue, 21, 40))
-                ? 'Entre une duree comprise entre 21 et 40 jours.'
+                ? 'Saisis une durée comprise entre 21 et 40 jours.'
                 : ''
             }
             helperText="Entre 21 et 40 jours"
             keyboardType="number-pad"
-            label="Duree moyenne du cycle"
+            label="Durée moyenne du cycle"
             maxLength={2}
             onBlur={() => touch('cycleLength')}
             onChangeText={updateField(setCycleLength)}
@@ -298,7 +298,7 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
           <BrandButton onPress={goNext}>Continuer</BrandButton>
         ) : (
           <BrandButton disabled={isSubmitting} onPress={handleSubmit}>
-            {isSubmitting ? 'Creation...' : 'Creer le compte'}
+            {isSubmitting ? 'Création...' : 'Créer le compte'}
           </BrandButton>
         )}
       </View>
