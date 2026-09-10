@@ -2,10 +2,17 @@ import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { BrandButton } from '../components/BrandButton';
+import { PasswordRequirements } from '../components/PasswordRequirements';
 import { TextField } from '../components/TextField';
 import { AuthScreenLayout } from './AuthScreenLayout';
 import { registerUser } from '../services/authApi';
 import { colors, fonts, radius, spacing, type } from '../theme';
+import {
+  isNumberInRange,
+  isStrongPassword,
+  isValidEmail,
+  isValidIsoDate
+} from '../utils/validation';
 
 const steps = ['Compte', 'Profil', 'Cycle'];
 const levels = [
@@ -24,23 +31,48 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [level, setLevel] = useState('debutante');
   const [goal, setGoal] = useState('regularite');
   const [cycleStartDate, setCycleStartDate] = useState(new Date().toISOString().slice(0, 10));
   const [cycleLength, setCycleLength] = useState('28');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const accountIsValid = name.trim().length >= 2 && email.trim().length > 0 && password.length >= 8;
+  const [touched, setTouched] = useState({});
+  const nameIsValid = name.trim().length >= 2 && name.trim().length <= 50;
+  const emailIsValid = isValidEmail(email);
+  const passwordIsValid = isStrongPassword(password);
+  const confirmationIsValid = passwordConfirmation.length > 0 && passwordConfirmation === password;
+  const accountIsValid = nameIsValid && emailIsValid && passwordIsValid && confirmationIsValid;
   const cycleLengthValue = Number(cycleLength);
   const cycleIsValid =
-    /^\d{4}-\d{2}-\d{2}$/.test(cycleStartDate) && cycleLengthValue >= 21 && cycleLengthValue <= 40;
+    isValidIsoDate(cycleStartDate) &&
+    Number.isInteger(cycleLengthValue) &&
+    isNumberInRange(cycleLengthValue, 21, 40);
   const canSubmit = accountIsValid && cycleIsValid;
+
+  const touch = (field) => setTouched((current) => ({ ...current, [field]: true }));
+  const updateField = (setter) => (value) => {
+    setter(value);
+    setError('');
+  };
+
+  const markAccountTouched = () => {
+    setTouched((current) => ({
+      ...current,
+      email: true,
+      name: true,
+      password: true,
+      passwordConfirmation: true
+    }));
+  };
 
   const goNext = () => {
     setError('');
 
     if (step === 0 && !accountIsValid) {
-      setError('Complete ton prenom, ton email et un mot de passe de 8 caracteres.');
+      markAccountTouched();
+      setError('Verifie les champs indiques avant de continuer.');
       return;
     }
 
@@ -54,8 +86,13 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
 
   const handleSubmit = async () => {
     if (!canSubmit || isSubmitting) {
+      markAccountTouched();
+      setTouched((current) => ({ ...current, cycleLength: true, cycleStartDate: true }));
+
       if (!cycleIsValid) {
-        setError('Renseigne une date au format AAAA-MM-JJ et une duree entre 21 et 40 jours.');
+        setError('Verifie les informations de ton cycle.');
+      } else {
+        setError('Verifie les champs indiques avant de creer ton compte.');
       }
 
       return;
@@ -112,17 +149,23 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
         <View style={styles.stepContent}>
           <TextField
             autoCapitalize="words"
+            error={touched.name && !nameIsValid ? 'Entre un prenom de 2 a 50 caracteres.' : ''}
             label="Prenom"
-            onChangeText={setName}
+            maxLength={50}
+            onBlur={() => touch('name')}
+            onChangeText={updateField(setName)}
             placeholder="Ton prenom"
             returnKeyType="next"
             value={name}
           />
           <TextField
             autoComplete="email"
+            error={touched.email && !emailIsValid ? 'Entre une adresse email valide.' : ''}
             keyboardType="email-address"
             label="Email"
-            onChangeText={setEmail}
+            maxLength={254}
+            onBlur={() => touch('email')}
+            onChangeText={updateField(setEmail)}
             placeholder="toi@email.com"
             returnKeyType="next"
             textContentType="emailAddress"
@@ -130,14 +173,39 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
           />
           <TextField
             autoComplete="new-password"
+            error={
+              touched.password && !passwordIsValid
+                ? 'Le mot de passe ne respecte pas encore toutes les regles.'
+                : ''
+            }
             label="Mot de passe"
-            onChangeText={setPassword}
-            onSubmitEditing={goNext}
-            placeholder="8 caracteres minimum"
+            maxLength={128}
+            onBlur={() => touch('password')}
+            onChangeText={updateField(setPassword)}
+            placeholder="Cree un mot de passe solide"
             returnKeyType="next"
             secureTextEntry
             textContentType="newPassword"
             value={password}
+          />
+          <PasswordRequirements password={password} />
+          <TextField
+            autoComplete="new-password"
+            error={
+              touched.passwordConfirmation && !confirmationIsValid
+                ? 'Les deux mots de passe doivent etre identiques.'
+                : ''
+            }
+            label="Confirme le mot de passe"
+            maxLength={128}
+            onBlur={() => touch('passwordConfirmation')}
+            onChangeText={updateField(setPasswordConfirmation)}
+            onSubmitEditing={goNext}
+            placeholder="Saisis-le une seconde fois"
+            returnKeyType="next"
+            secureTextEntry
+            textContentType="newPassword"
+            value={passwordConfirmation}
           />
         </View>
       ) : null}
@@ -182,17 +250,34 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
             Ces infos servent a placer ton entrainement dans la bonne phase du cycle.
           </Text>
           <TextField
+            error={
+              touched.cycleStartDate && !isValidIsoDate(cycleStartDate)
+                ? "Entre une date valide qui n'est pas dans le futur."
+                : ''
+            }
+            helperText="Format : AAAA-MM-JJ"
             keyboardType="numbers-and-punctuation"
             label="Debut des dernieres regles"
-            onChangeText={setCycleStartDate}
+            maxLength={10}
+            onBlur={() => touch('cycleStartDate')}
+            onChangeText={updateField(setCycleStartDate)}
             placeholder="AAAA-MM-JJ"
             returnKeyType="next"
             value={cycleStartDate}
           />
           <TextField
+            error={
+              touched.cycleLength &&
+              (!Number.isInteger(cycleLengthValue) || !isNumberInRange(cycleLengthValue, 21, 40))
+                ? 'Entre une duree comprise entre 21 et 40 jours.'
+                : ''
+            }
+            helperText="Entre 21 et 40 jours"
             keyboardType="number-pad"
             label="Duree moyenne du cycle"
-            onChangeText={setCycleLength}
+            maxLength={2}
+            onBlur={() => touch('cycleLength')}
+            onChangeText={updateField(setCycleLength)}
             onSubmitEditing={handleSubmit}
             placeholder="28"
             returnKeyType="done"
@@ -212,7 +297,7 @@ export function RegisterScreen({ navigation, onAuthenticated }) {
         {step < steps.length - 1 ? (
           <BrandButton onPress={goNext}>Continuer</BrandButton>
         ) : (
-          <BrandButton disabled={!canSubmit || isSubmitting} onPress={handleSubmit}>
+          <BrandButton disabled={isSubmitting} onPress={handleSubmit}>
             {isSubmitting ? 'Creation...' : 'Creer le compte'}
           </BrandButton>
         )}
@@ -276,7 +361,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm
   },
   error: {
-    color: colors.rose,
+    color: colors.roseLight,
     fontFamily: fonts.strong,
     fontSize: 13,
     letterSpacing: 0,
