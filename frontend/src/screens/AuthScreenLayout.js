@@ -17,7 +17,11 @@ export function AuthScreenLayout({ children, eyebrow, footer, subtitle, title, t
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.keyboard}
       >
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           {topAccessory ? <View style={styles.topAccessory}>{topAccessory}</View> : null}
 
           <View style={styles.header}>
@@ -41,9 +45,9 @@ const styles = StyleSheet.create({
   },
   content: {
     flexGrow: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     paddingHorizontal: spacing.xl,
-    paddingVertical: 38
+    paddingVertical: 42
   },
   eyebrow: {
     ...type.eyebrow,

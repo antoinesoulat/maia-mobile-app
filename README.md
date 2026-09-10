@@ -59,8 +59,9 @@ Start PostgreSQL, the Fastify API, and the Expo Web app:
 docker-compose up --build
 ```
 
-Open the mobile layout in a browser at `http://localhost:8081`. The API health endpoint is
-available at `http://localhost:3000/health`, and PostgreSQL is exposed on port `5432`.
+Open the mobile layout in a browser at `http://localhost:8082`. The API health endpoint is
+available through the preview gateway at `http://localhost:8082/health`, and PostgreSQL is exposed
+on port `5432`.
 
 Useful Docker commands:
 

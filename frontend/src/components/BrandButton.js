@@ -1,19 +1,37 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { useRef } from 'react';
+import { Animated, Pressable, StyleSheet, Text } from 'react-native';
 
 import { colors, radius, type } from '../theme';
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 export function BrandButton({ children, disabled = false, onPress, variant = 'primary' }) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const animateTo = (toValue) => {
+    Animated.spring(scale, {
+      damping: 14,
+      mass: 0.7,
+      stiffness: 220,
+      toValue,
+      useNativeDriver: true
+    }).start();
+  };
+
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole="button"
       disabled={disabled}
+      onPressIn={() => animateTo(0.97)}
+      onPressOut={() => animateTo(1)}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
         variant === 'secondary' && styles.secondary,
         variant === 'ghost' && styles.ghost,
         disabled && styles.disabled,
-        pressed && styles.pressed
+        pressed && styles.pressed,
+        { transform: [{ scale }] }
       ]}
     >
       <Text
@@ -26,7 +44,7 @@ export function BrandButton({ children, disabled = false, onPress, variant = 'pr
       >
         {children}
       </Text>
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
@@ -36,11 +54,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     borderRadius: radius.sm,
     justifyContent: 'center',
-    minHeight: 54
+    minHeight: 54,
+    paddingHorizontal: 14
   },
   label: {
     ...type.action,
-    color: colors.ink
+    color: colors.ink,
+    textAlign: 'center'
   },
   secondary: {
     backgroundColor: colors.honey
@@ -63,7 +83,6 @@ const styles = StyleSheet.create({
     color: colors.muted
   },
   pressed: {
-    opacity: 0.86,
-    transform: [{ scale: 0.99 }]
+    opacity: 0.86
   }
 });

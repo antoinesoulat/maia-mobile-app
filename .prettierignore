@@ -7,3 +7,5 @@ coverage
 .git
 .git-local
 backend/drizzle
+docs/*.md
+opencode.json

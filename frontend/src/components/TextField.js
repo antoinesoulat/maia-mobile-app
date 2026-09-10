@@ -5,9 +5,12 @@ import { colors, fonts, radius, spacing } from '../theme';
 export function TextField({
   autoCapitalize = 'none',
   autoComplete,
+  blurOnSubmit,
+  editable = true,
   keyboardType = 'default',
   label,
   onChangeText,
+  onSubmitEditing,
   placeholder,
   returnKeyType,
   secureTextEntry = false,
@@ -20,8 +23,11 @@ export function TextField({
       <TextInput
         autoCapitalize={autoCapitalize}
         autoComplete={autoComplete}
+        blurOnSubmit={blurOnSubmit}
+        editable={editable}
         keyboardType={keyboardType}
         onChangeText={onChangeText}
+        onSubmitEditing={onSubmitEditing}
         placeholder={placeholder}
         placeholderTextColor={colors.muted}
         returnKeyType={returnKeyType}

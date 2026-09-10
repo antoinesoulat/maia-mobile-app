@@ -4,24 +4,53 @@ import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { BrandButton } from '../components/BrandButton';
 import { TextField } from '../components/TextField';
 import { AuthScreenLayout } from './AuthScreenLayout';
+import { loginUser } from '../services/authApi';
 import { colors, fonts, radius, spacing, type } from '../theme';
 
 const maiaIcon = require('../../assets/maia-app-icon.png');
 
-export function LoginScreen({ navigation }) {
+export function LoginScreen({ navigation, onAuthenticated }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const canSubmit = email.trim().length > 0 && password.length >= 8;
+
+  const handleSubmit = async () => {
+    if (!canSubmit || isSubmitting) {
+      return;
+    }
+
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      const authData = await loginUser({
+        email: email.trim().toLowerCase(),
+        password
+      });
+
+      await onAuthenticated(authData);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }]
+      });
+    } catch (nextError) {
+      setError(nextError.message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <AuthScreenLayout
       eyebrow="Connexion"
       footer={
-        <Pressable onPress={() => navigation.navigate('Register')} style={styles.footerLink}>
-          <Text style={styles.footerText}>Pas encore de compte ? Creer ton espace Maia</Text>
-        </Pressable>
+        <BrandButton onPress={() => navigation.navigate('Register')} variant="ghost">
+          Pas encore de compte ? Rejoins l'aventure
+        </BrandButton>
       }
-      subtitle="Retrouve ton rythme, tes phases et ton entrainement du jour."
+      subtitle="Connecte-toi pour retrouver ton profil, ton cycle et tes prochaines seances."
       title="Ravie de te revoir."
       topAccessory={
         <View style={styles.brandLockup}>
@@ -46,16 +75,20 @@ export function LoginScreen({ navigation }) {
         autoComplete="password"
         label="Mot de passe"
         onChangeText={setPassword}
+        onSubmitEditing={handleSubmit}
         placeholder="8 caracteres minimum"
         returnKeyType="done"
         secureTextEntry
         textContentType="password"
         value={password}
       />
-      <Pressable style={styles.forgotButton}>
+      <Pressable disabled style={styles.forgotButton}>
         <Text style={styles.forgotText}>Mot de passe oublie ?</Text>
       </Pressable>
-      <BrandButton disabled={!canSubmit}>Se connecter</BrandButton>
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+      <BrandButton disabled={!canSubmit || isSubmitting} onPress={handleSubmit}>
+        {isSubmitting ? 'Connexion...' : 'Se connecter'}
+      </BrandButton>
       <Text style={styles.notice}>
         Maia accompagne ton entrainement. L'application ne remplace pas un avis medical.
       </Text>
@@ -104,17 +137,12 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     textAlign: 'center'
   },
-  footerLink: {
-    alignItems: 'center',
-    minHeight: 44,
-    justifyContent: 'center',
-    paddingHorizontal: spacing.md
-  },
-  footerText: {
-    color: colors.honey,
+  error: {
+    color: colors.rose,
     fontFamily: fonts.strong,
-    fontSize: 14,
+    fontSize: 13,
     letterSpacing: 0,
+    lineHeight: 18,
     textAlign: 'center'
   }
 });
