@@ -267,3 +267,17 @@ dans `AGENTS.md` : chaque future modification de code, d'infrastructure ou de CI
 doit compléter ce fichier dans la même pull request.
 
 **Chantier concerné :** documentation et suivi du projet.
+
+### Préparation du backlog automatisé
+
+J'ai défini quatre rôles de travail dans `AGENTS.md` : Product et Backlog,
+Frontend Mobile, Backend et Infrastructure. Chaque rôle connaît les documents de
+référence qu'il doit lire et les limites de son intervention.
+
+J'ai également analysé les spécifications, le journal et le code existant pour
+préparer un dry-run du futur backlog GitHub. La proposition regroupe les doublons,
+normalise les identifiants et distingue les fonctionnalités terminées, partielles
+et encore au backlog. Aucune Issue et aucun GitHub Project n'ont été créés pendant
+cette étape.
+
+**Chantier concerné :** organisation produit et automatisation du backlog.
