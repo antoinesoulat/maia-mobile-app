@@ -60,30 +60,34 @@ module.exports = async function authRoutes(app) {
     }
 
     const passwordHash = await bcrypt.hash(payload.password, SALT_ROUNDS);
-    const [createdUser] = await db
-      .insert(users)
-      .values({
-        email: payload.email,
-        passwordHash,
-        name: payload.name,
-        birthdate: payload.birthdate,
-        weight: payload.weight,
-        height: payload.height,
-        level: payload.level,
-        goal: payload.goal,
+    const createdUser = await db.transaction(async (transaction) => {
+      const [user] = await transaction
+        .insert(users)
+        .values({
+          email: payload.email,
+          passwordHash,
+          name: payload.name,
+          birthdate: payload.birthdate,
+          weight: payload.weight,
+          height: payload.height,
+          level: payload.level,
+          goal: payload.goal,
+          cycleStartDate: payload.cycleStartDate,
+          cycleLength: payload.cycleLength
+        })
+        .returning({ id: users.id });
+
+      await transaction.insert(cycles).values({
+        userId: user.id,
         cycleStartDate: payload.cycleStartDate,
         cycleLength: payload.cycleLength
-      })
-      .returning({ id: users.id });
+      });
 
-    await db.insert(cycles).values({
-      userId: createdUser.id,
-      cycleStartDate: payload.cycleStartDate,
-      cycleLength: payload.cycleLength
-    });
+      await transaction.insert(notificationSettings).values({
+        userId: user.id
+      });
 
-    await db.insert(notificationSettings).values({
-      userId: createdUser.id
+      return user;
     });
 
     const token = app.jwt.sign({ sub: createdUser.id });

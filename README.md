@@ -61,7 +61,8 @@ docker-compose up --build
 
 Open the mobile layout in a browser at `http://localhost:8082`. The API health endpoint is
 available through the preview gateway at `http://localhost:8082/health`, and PostgreSQL is exposed
-on port `5432`.
+on port `5432`. Compose applies the versioned Drizzle migrations before starting the API. The
+one-shot `migrate` service showing `Exit 0` after startup is expected.
 
 Useful Docker commands:
 
