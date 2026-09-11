@@ -6,9 +6,11 @@ const {
   pgTable,
   real,
   timestamp,
+  uniqueIndex,
   uuid,
   varchar
 } = require('drizzle-orm/pg-core');
+const { sql } = require('drizzle-orm');
 
 const sessionStatus = pgEnum('session_status', ['active', 'completed']);
 
@@ -29,18 +31,26 @@ const users = pgTable('users', {
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull()
 });
 
-const sessions = pgTable('sessions', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  startTime: timestamp('start_time', { withTimezone: true }).notNull(),
-  endTime: timestamp('end_time', { withTimezone: true }),
-  distance: real('distance'),
-  duration: integer('duration'),
-  averagePace: real('average_pace'),
-  status: sessionStatus('status').default('active').notNull()
-});
+const sessions = pgTable(
+  'sessions',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    startTime: timestamp('start_time', { withTimezone: true }).notNull(),
+    endTime: timestamp('end_time', { withTimezone: true }),
+    distance: real('distance'),
+    duration: integer('duration'),
+    averagePace: real('average_pace'),
+    status: sessionStatus('status').default('active').notNull()
+  },
+  (table) => [
+    uniqueIndex('sessions_one_active_per_user')
+      .on(table.userId)
+      .where(sql`${table.status} = 'active'`)
+  ]
+);
 
 const cycles = pgTable('cycles', {
   userId: uuid('user_id')
