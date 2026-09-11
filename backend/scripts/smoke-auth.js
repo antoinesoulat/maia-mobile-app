@@ -27,6 +27,7 @@ async function run() {
     });
 
     assert.equal(response.statusCode, 201, response.body);
+    const { token } = response.json().data;
 
     const [user] = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
     assert.ok(user?.id, 'The registration did not create a user.');
@@ -47,6 +48,33 @@ async function run() {
       user.id,
       'The registration did not create notification settings.'
     );
+
+    const authorization = { authorization: `Bearer ${token}` };
+    const cycleViewResponse = await app.inject({
+      headers: authorization,
+      method: 'GET',
+      url: '/cycle/view'
+    });
+    assert.equal(cycleViewResponse.statusCode, 200, cycleViewResponse.body);
+    assert.ok(cycleViewResponse.json().data.current_phase);
+
+    const cycleUpdateResponse = await app.inject({
+      headers: authorization,
+      method: 'PUT',
+      payload: { cycle_length: 30, cycle_start_date: '2026-09-01' },
+      url: '/cycle'
+    });
+    assert.equal(cycleUpdateResponse.statusCode, 200, cycleUpdateResponse.body);
+    assert.equal(cycleUpdateResponse.json().data.cycle_length, 30);
+
+    const workoutResponse = await app.inject({
+      headers: authorization,
+      method: 'GET',
+      url: '/workouts/today'
+    });
+    assert.equal(workoutResponse.statusCode, 200, workoutResponse.body);
+    assert.equal(workoutResponse.json().data.type, 'run');
+    assert.ok(workoutResponse.json().data.duration >= 15);
 
     process.stdout.write('Authentication database smoke test passed.\n');
   } finally {
