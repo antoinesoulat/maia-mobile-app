@@ -112,6 +112,7 @@ jobs:
 
   sonarqube:
     name: SonarQube quality gate
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     needs:
       - linting
@@ -139,21 +140,14 @@ jobs:
 
       - name: Fail when open issues remain
         env:
-          EVENT_NAME: ${{ github.event_name }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
-          REF_NAME: ${{ github.ref_name }}
         run: |
-          scope=(--data-urlencode "branch=${REF_NAME}")
-          if [ "${EVENT_NAME}" = "pull_request" ]; then
-            scope=(--data-urlencode "pullRequest=${PR_NUMBER}")
-          fi
-
           response=$(curl --fail --silent --show-error --get \
             'https://sonarcloud.io/api/issues/search' \
-            --data-urlencode 'componentKeys=antoinesoulat_maia-mobile-app' \
+            --data-urlencode 'componentKeys=maia-organization_maia-mobile-app' \
+            --data-urlencode "pullRequest=${PR_NUMBER}" \
             --data-urlencode 'resolved=false' \
-            --data-urlencode 'ps=1' \
-            "${scope[@]}")
+            --data-urlencode 'ps=1')
           issue_count=$(jq --raw-output '.total' <<< "${response}")
 
           if [ "${issue_count}" -gt 0 ]; then
