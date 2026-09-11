@@ -76,6 +76,55 @@ async function run() {
     assert.equal(workoutResponse.json().data.type, 'run');
     assert.ok(workoutResponse.json().data.duration >= 15);
 
+    const sessionStartResponse = await app.inject({
+      headers: authorization,
+      method: 'POST',
+      url: '/sessions/start'
+    });
+    assert.equal(sessionStartResponse.statusCode, 201, sessionStartResponse.body);
+    const sessionId = sessionStartResponse.json().data.session_id;
+
+    const duplicateStartResponse = await app.inject({
+      headers: authorization,
+      method: 'POST',
+      url: '/sessions/start'
+    });
+    assert.equal(duplicateStartResponse.statusCode, 400, duplicateStartResponse.body);
+    assert.equal(duplicateStartResponse.json().error.code, 'SESSION_ALREADY_ACTIVE');
+
+    const sessionStopResponse = await app.inject({
+      headers: authorization,
+      method: 'POST',
+      payload: {
+        coordinates: [
+          { lat: 48.8566, lng: 2.3522, timestamp: '2026-09-11T10:00:00.000Z' },
+          { lat: 48.8656, lng: 2.3522, timestamp: '2026-09-11T10:06:00.000Z' }
+        ],
+        session_id: sessionId
+      },
+      url: '/sessions/stop'
+    });
+    assert.equal(sessionStopResponse.statusCode, 200, sessionStopResponse.body);
+    assert.equal(sessionStopResponse.json().data.session.status, 'completed');
+    assert.ok(sessionStopResponse.json().data.session.distance > 0.9);
+
+    const historyResponse = await app.inject({
+      headers: authorization,
+      method: 'GET',
+      url: '/sessions?limit=10&offset=0'
+    });
+    assert.equal(historyResponse.statusCode, 200, historyResponse.body);
+    assert.equal(historyResponse.json().data.sessions.length, 1);
+
+    const statsResponse = await app.inject({
+      headers: authorization,
+      method: 'GET',
+      url: '/stats/me'
+    });
+    assert.equal(statsResponse.statusCode, 200, statsResponse.body);
+    assert.equal(statsResponse.json().data.total_sessions, 1);
+    assert.ok(statsResponse.json().data.total_distance > 0.9);
+
     process.stdout.write('Authentication database smoke test passed.\n');
   } finally {
     if (createdUserId) {
