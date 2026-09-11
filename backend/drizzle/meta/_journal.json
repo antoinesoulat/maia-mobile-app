@@ -15,6 +15,13 @@
       "when": 1789128753757,
       "tag": "0001_known_galactus",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789129493264,
+      "tag": "0002_sour_network",
+      "breakpoints": true
     }
   ]
 }

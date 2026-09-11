@@ -4,7 +4,7 @@ const { eq } = require('drizzle-orm');
 
 const { buildApp } = require('../src/app');
 const { db, pool } = require('../src/db');
-const { cycles, notificationSettings, users } = require('../src/db/schema');
+const { cycles, notificationSettings, users, workoutRecommendations } = require('../src/db/schema');
 
 async function run() {
   const app = buildApp();
@@ -108,6 +108,28 @@ async function run() {
     assert.equal(sessionStopResponse.json().data.session.status, 'completed');
     assert.ok(sessionStopResponse.json().data.session.distance > 0.9);
 
+    const feedbackResponse = await app.inject({
+      headers: authorization,
+      method: 'PUT',
+      payload: { energy: 2, fatigue: 4, motivation: 3, pain: 4 },
+      url: `/sessions/${sessionId}/feedback`
+    });
+    assert.equal(feedbackResponse.statusCode, 200, feedbackResponse.body);
+    assert.equal(feedbackResponse.json().data.feedback.pain, 4);
+
+    const repeatedWorkoutResponse = await app.inject({
+      headers: authorization,
+      method: 'GET',
+      url: '/workouts/today'
+    });
+    assert.deepEqual(repeatedWorkoutResponse.json().data, workoutResponse.json().data);
+
+    const recommendations = await db
+      .select({ id: workoutRecommendations.id })
+      .from(workoutRecommendations)
+      .where(eq(workoutRecommendations.userId, user.id));
+    assert.equal(recommendations.length, 1);
+
     const historyResponse = await app.inject({
       headers: authorization,
       method: 'GET',
@@ -125,7 +147,7 @@ async function run() {
     assert.equal(statsResponse.json().data.total_sessions, 1);
     assert.ok(statsResponse.json().data.total_distance > 0.9);
 
-    process.stdout.write('Authentication database smoke test passed.\n');
+    process.stdout.write('Backend database smoke test passed.\n');
   } finally {
     if (createdUserId) {
       await db.delete(users).where(eq(users.id, createdUserId));

@@ -20,4 +20,15 @@ describe('workout recommendation', () => {
       })
     ).toMatchObject({ duration: 55, intensity: 'high', type: 'run' });
   });
+
+  test('reduces the next workout after difficult feedback', () => {
+    expect(
+      getWorkoutRecommendation({
+        cycleView: { current_phase: 'ovulatory' },
+        feedback: { energy: 2, fatigue: 4, pain: 4 },
+        goal: 'performance',
+        level: 'intermediaire'
+      })
+    ).toMatchObject({ duration: 30, intensity: 'low' });
+  });
 });
