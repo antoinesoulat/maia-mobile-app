@@ -25,17 +25,20 @@ const phaseDurationAdjustment = {
   ovulatory: 10
 };
 
-function getWorkoutRecommendation({ cycleView, goal, level }) {
+function getWorkoutRecommendation({ cycleView, feedback, goal, level }) {
   const phase = cycleView.current_phase;
   const goalAdjustment = goal === 'endurance' ? 5 : 0;
+  const needsRecovery = feedback?.pain >= 4 || feedback?.fatigue >= 4 || feedback?.energy <= 2;
+  const recoveryAdjustment = needsRecovery ? -10 : 0;
 
   return {
+    adaptation: needsRecovery ? 'Séance allégée selon ton dernier ressenti.' : null,
     date: new Date().toISOString().slice(0, 10),
     duration: Math.max(
       15,
-      durationByLevel[level] + phaseDurationAdjustment[phase] + goalAdjustment
+      durationByLevel[level] + phaseDurationAdjustment[phase] + goalAdjustment + recoveryAdjustment
     ),
-    intensity: intensityByPhase[phase],
+    intensity: needsRecovery ? 'low' : intensityByPhase[phase],
     phase,
     title: titleByPhase[phase],
     type: 'run'

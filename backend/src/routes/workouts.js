@@ -1,7 +1,7 @@
-const { eq } = require('drizzle-orm');
+const { and, desc, eq } = require('drizzle-orm');
 
 const { db } = require('../db');
-const { users } = require('../db/schema');
+const { sessionFeedback, sessions, users, workoutRecommendations } = require('../db/schema');
 const { getCycleView } = require('../services/cycle');
 const { getWorkoutRecommendation } = require('../services/workouts');
 const { errorResponse, successResponse } = require('../utils/response');
@@ -24,6 +24,53 @@ module.exports = async function workoutRoutes(app) {
     }
 
     const cycleView = getCycleView(profile.cycleStartDate, profile.cycleLength);
-    return successResponse(getWorkoutRecommendation({ cycleView, ...profile }));
+    const [feedback] = await db
+      .select({
+        energy: sessionFeedback.energy,
+        fatigue: sessionFeedback.fatigue,
+        motivation: sessionFeedback.motivation,
+        pain: sessionFeedback.pain
+      })
+      .from(sessionFeedback)
+      .innerJoin(sessions, eq(sessionFeedback.sessionId, sessions.id))
+      .where(and(eq(sessions.userId, request.user.sub), eq(sessions.status, 'completed')))
+      .orderBy(desc(sessionFeedback.updatedAt))
+      .limit(1);
+
+    const recommendation = getWorkoutRecommendation({ cycleView, feedback, ...profile });
+    await db
+      .insert(workoutRecommendations)
+      .values({
+        adaptation: recommendation.adaptation,
+        duration: recommendation.duration,
+        intensity: recommendation.intensity,
+        phase: recommendation.phase,
+        recommendationDate: recommendation.date,
+        title: recommendation.title,
+        type: recommendation.type,
+        userId: request.user.sub
+      })
+      .onConflictDoNothing();
+
+    const [storedRecommendation] = await db
+      .select({
+        adaptation: workoutRecommendations.adaptation,
+        date: workoutRecommendations.recommendationDate,
+        duration: workoutRecommendations.duration,
+        intensity: workoutRecommendations.intensity,
+        phase: workoutRecommendations.phase,
+        title: workoutRecommendations.title,
+        type: workoutRecommendations.type
+      })
+      .from(workoutRecommendations)
+      .where(
+        and(
+          eq(workoutRecommendations.userId, request.user.sub),
+          eq(workoutRecommendations.recommendationDate, recommendation.date)
+        )
+      )
+      .limit(1);
+
+    return successResponse(storedRecommendation);
   });
 };
