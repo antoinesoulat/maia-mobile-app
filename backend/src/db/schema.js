@@ -52,6 +52,42 @@ const sessions = pgTable(
   ]
 );
 
+const sessionFeedback = pgTable('session_feedback', {
+  sessionId: uuid('session_id')
+    .primaryKey()
+    .references(() => sessions.id, { onDelete: 'cascade' }),
+  energy: integer('energy'),
+  fatigue: integer('fatigue'),
+  motivation: integer('motivation'),
+  pain: integer('pain'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull()
+});
+
+const workoutRecommendations = pgTable(
+  'workout_recommendations',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    recommendationDate: date('recommendation_date').notNull(),
+    type: varchar('type', { length: 32 }).notNull(),
+    title: varchar('title', { length: 128 }).notNull(),
+    duration: integer('duration').notNull(),
+    intensity: varchar('intensity', { length: 32 }).notNull(),
+    phase: varchar('phase', { length: 32 }).notNull(),
+    adaptation: varchar('adaptation', { length: 255 }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull()
+  },
+  (table) => [
+    uniqueIndex('workout_recommendations_user_date_unique').on(
+      table.userId,
+      table.recommendationDate
+    )
+  ]
+);
+
 const cycles = pgTable('cycles', {
   userId: uuid('user_id')
     .primaryKey()
@@ -74,7 +110,9 @@ const notificationSettings = pgTable('notification_settings', {
 module.exports = {
   cycles,
   notificationSettings,
+  sessionFeedback,
   sessions,
   sessionStatus,
-  users
+  users,
+  workoutRecommendations
 };
